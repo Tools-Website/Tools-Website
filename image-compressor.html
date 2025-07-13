@@ -1,0 +1,119 @@
+  
+    
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Compressor</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #007bff;
+    }
+
+    .container {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.1);
+      padding: 20px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    input[type="file"] {
+      margin: 15px 0;
+    }
+
+    img {
+      max-width: 100%;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+
+    button {
+      margin-top: 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Compressor</h1>
+  <div class="container">
+    <input type="file" id="upload" accept="image/*" />
+    <div id="previewContainer">
+      <img id="preview" src="" alt="Preview" style="display:none;" />
+    </div>
+    <button id="compressBtn" style="display:none;">Compress & Download</button>
+  </div>
+
+  <script>
+    const upload = document.getElementById('upload');
+    const preview = document.getElementById('preview');
+    const compressBtn = document.getElementById('compressBtn');
+
+    upload.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          preview.src = event.target.result;
+          preview.style.display = 'block';
+          compressBtn.style.display = 'inline-block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    compressBtn.addEventListener('click', () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.src = preview.src;
+
+      img.onload = () => {
+        const scale = 0.5; // Compress to 50% size
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob((blob) => {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'compressed-image.jpg';
+          link.click();
+        }, 'image/jpeg', 0.7); // JPEG format with 70% quality
+      };
+    });
+  </script>
+</body>
+</html>
+  
+  
+  
