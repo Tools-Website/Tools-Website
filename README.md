@@ -515,7 +515,7 @@
                     <div class="tool-icon">✂️</div>
                     <h3>Image Cropper</h3>
                     <p>Crop images to remove unwanted areas or focus on specific parts</p>
-                    <a href="#" class="tool-button">Use Tool</a>
+                    <a href="image-crop.html" class="tool-button">Use Tool</a>
                 </div>
                 
                 <div class="tool-card">
