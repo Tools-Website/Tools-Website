@@ -501,7 +501,7 @@
                     <div class="tool-icon">🗜️</div>
                     <h3>Image Compressor</h3>
                     <p>Reduce image file size without losing quality</p>
-                    <a href="#" class="tool-button">Use Tool</a>
+                    <a href="image-compressor.html" class="tool-button">Use Tool</a>
                 </div>
                 
                 <div class="tool-card">
