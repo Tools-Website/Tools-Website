@@ -1,0 +1,127 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image to Text Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007bff;
+    }
+
+    .upload-section {
+      background: #ffffff;
+      border: 2px dashed #007bff;
+      padding: 2rem;
+      text-align: center;
+      border-radius: 10px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    label[for="imageInput"] {
+      background-color: #007bff;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #output {
+      margin-top: 1rem;
+      background: #e6f0ff;
+      padding: 1rem;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+
+    button.copy-btn {
+      margin-top: 0.5rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 0.5rem;
+      }
+
+      .upload-section {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Image to Text</h1>
+    <div class="upload-section">
+      <label for="imageInput">Upload Image</label>
+      <input type="file" id="imageInput" accept="image/*" />
+    </div>
+    <div id="output" style="display:none;"></div>
+    <button class="copy-btn" style="display:none;" onclick="copyText()">Copy Text</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.4/dist/tesseract.min.js"></script>
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const output = document.getElementById('output');
+    const copyBtn = document.querySelector('.copy-btn');
+
+    imageInput.addEventListener('change', async () => {
+      if (imageInput.files.length === 0) return;
+
+      const file = imageInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async () => {
+        output.style.display = 'block';
+        output.textContent = 'Processing...';
+
+        try {
+          const result = await Tesseract.recognize(reader.result, 'eng');
+          output.textContent = result.data.text;
+          copyBtn.style.display = 'inline-block';
+        } catch (err) {
+          output.textContent = 'Error processing image.';
+          console.error(err);
+        }
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    function copyText() {
+      const text = output.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Text copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>
+  
+  
