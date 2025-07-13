@@ -494,7 +494,7 @@
                     <div class="tool-icon">🔄</div>
                     <h3>Image Converter</h3>
                     <p>Convert between JPG, PNG, GIF, WEBP and more formats</p>
-                    <a href="#" class="tool-button">Use Tool</a>
+                    <a href="image-converter.html" class="tool-button">Use Tool</a>
                 </div>
                 
                 <div class="tool-card">
