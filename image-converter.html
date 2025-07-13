@@ -1,0 +1,123 @@
+  
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Converter Tool</title>
+  <style>
+    body {
+      background-color: #ffffff;
+      color: #2563eb;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+    .container {
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background-color: #ffffff;
+    }
+    input, select, button {
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.5rem;
+      border: 2px solid #2563eb;
+      border-radius: 8px;
+      font-size: 1rem;
+      color: #2563eb;
+      background-color: #ffffff;
+    }
+    button {
+      background-color: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1e40af;
+    }
+    img {
+      max-width: 100%;
+      margin-top: 1rem;
+      border-radius: 8px;
+    }
+    .download-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: #2563eb;
+      color: white;
+      text-align: center;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .download-btn:hover {
+      background-color: #1e40af;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Image Converter Tool</h1>
+    <input type="file" id="imageInput" accept="image/*" />
+    <select id="formatSelect">
+      <option value="png">PNG</option>
+      <option value="jpeg">JPG</option>
+      <option value="gif">GIF</option>
+      <option value="webp">WebP</option>
+    </select>
+    <button onclick="convertImage()">Convert Image</button>
+
+    <div id="previewContainer"></div>
+  </div>
+
+  <script>
+    let originalFile;
+
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+      originalFile = e.target.files[0];
+      const previewContainer = document.getElementById('previewContainer');
+      previewContainer.innerHTML = '<p>Original Preview:</p>' + '<img src="' + URL.createObjectURL(originalFile) + '" alt="Original Image">';
+    });
+
+    function convertImage() {
+      if (!originalFile) return alert("Please upload an image first.");
+
+      const format = document.getElementById("formatSelect").value;
+      const reader = new FileReader();
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+
+      reader.onload = function(event) {
+        img.onload = function() {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+
+          canvas.toBlob(function(blob) {
+            const convertedUrl = URL.createObjectURL(blob);
+            const previewContainer = document.getElementById("previewContainer");
+            previewContainer.innerHTML += '<p>Converted Preview:</p>' +
+              '<img src="' + convertedUrl + '" alt="Converted Image">' +
+              '<a class="download-btn" href="' + convertedUrl + '" download="converted-image.' + format + '">Download Converted Image</a>';
+          }, 'image/' + format);
+        };
+        img.src = event.target.result;
+      };
+
+      reader.readAsDataURL(originalFile);
+    }
+  </script>
+</body>
+</html>
+  
+  
