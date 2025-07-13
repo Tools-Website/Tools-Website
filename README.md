@@ -508,7 +508,7 @@
                     <div class="tool-icon">📏</div>
                     <h3>Image Resizer</h3>
                     <p>Resize images to any dimension while maintaining aspect ratio</p>
-                    <a href="image-resizer.html" class="tool-button">Use Tool</a>
+                    <a href="#" class="tool-button">Use Tool</a>
                 </div>
                 
                 <div class="tool-card">
