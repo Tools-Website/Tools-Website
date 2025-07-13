@@ -1,0 +1,195 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Image Rotator/Flipper Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #007bff;
+    }
+
+    .upload-section {
+      margin: 20px 0;
+    }
+
+    .controls {
+      margin: 20px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 5px;
+      flex: 1 1 40%;
+      max-width: 180px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .preview {
+      margin: 20px 0;
+      max-height: 300px;
+      overflow: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+
+    #image-preview {
+      max-width: 100%;
+      max-height: 280px;
+      transition: transform 0.3s ease;
+    }
+
+    .download {
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+
+      button {
+        width: 100%;
+        max-width: none;
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Image Rotator/Flipper Tool</h1>
+    <div class="upload-section">
+      <input type="file" id="image-upload" accept="image/*">
+    </div>
+    <div class="controls">
+      <button id="rotate-left">Rotate Left</button>
+      <button id="rotate-right">Rotate Right</button>
+      <button id="flip-horizontal">Flip Horizontal</button>
+      <button id="flip-vertical">Flip Vertical</button>
+    </div>
+    <div class="preview">
+      <img id="image-preview" src="" alt="Image Preview" />
+    </div>
+    <div class="download">
+      <a id="download-link" href="#" download="edited_image.jpg">
+        <button>Download Image</button>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    let imagePreview = document.getElementById('image-preview');
+    let imageUpload = document.getElementById('image-upload');
+    let rotateLeftBtn = document.getElementById('rotate-left');
+    let rotateRightBtn = document.getElementById('rotate-right');
+    let flipHorizontalBtn = document.getElementById('flip-horizontal');
+    let flipVerticalBtn = document.getElementById('flip-vertical');
+    let downloadLink = document.getElementById('download-link');
+
+    let rotation = 0;
+    let flipHorizontal = false;
+    let flipVertical = false;
+
+    imageUpload.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+          rotation = 0;
+          flipHorizontal = false;
+          flipVertical = false;
+          imagePreview.style.transform = '';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    rotateLeftBtn.addEventListener('click', () => {
+      rotation -= 90;
+      updateImage();
+    });
+
+    rotateRightBtn.addEventListener('click', () => {
+      rotation += 90;
+      updateImage();
+    });
+
+    flipHorizontalBtn.addEventListener('click', () => {
+      flipHorizontal = !flipHorizontal;
+      updateImage();
+    });
+
+    flipVerticalBtn.addEventListener('click', () => {
+      flipVertical = !flipVertical;
+      updateImage();
+    });
+
+    function updateImage() {
+      imagePreview.style.transform = `rotate(${rotation}deg)` +
+        (flipHorizontal ? ' scaleX(-1)' : '') +
+        (flipVertical ? ' scaleY(-1)' : '');
+      updateDownloadLink();
+    }
+
+    function updateDownloadLink() {
+      if (!imagePreview.src) return;
+
+      let canvas = document.createElement('canvas');
+      let ctx = canvas.getContext('2d');
+      let img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = imagePreview.src;
+
+      img.onload = function() {
+        let w = img.width;
+        let h = img.height;
+
+        if (rotation % 180 !== 0) {
+          canvas.width = h;
+          canvas.height = w;
+        } else {
+          canvas.width = w;
+          canvas.height = h;
+        }
+
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(rotation * Math.PI / 180);
+        ctx.scale(flipHorizontal ? -1 : 1, flipVertical ? -1 : 1);
+        ctx.drawImage(img, -w / 2, -h / 2);
+
+        downloadLink.href = canvas.toDataURL("image/jpeg");
+      };
+    }
+  </script>
+</body>
+</html>
+  
