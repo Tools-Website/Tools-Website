@@ -522,7 +522,7 @@
                     <div class="tool-icon">🔤</div>
                     <h3>Image to Text (OCR)</h3>
                     <p>Extract text from images with optical character recognition</p>
-                    <a href="#" class="tool-button">Use Tool</a>
+                    <a href="image-to-text.html" class="tool-button">Use Tool</a>
                 </div>
                 
                 <div class="tool-card">
