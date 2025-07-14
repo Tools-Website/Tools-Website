@@ -1,0 +1,98 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UUID Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef8ff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+    }
+
+    h2 {
+      color: #007bff;
+    }
+
+    .uuid-box {
+      word-break: break-all;
+      background: #f1f1f1;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #copyBtn {
+      background-color: #28a745;
+      margin-left: 10px;
+    }
+
+    #copyBtn:hover {
+      background-color: #1e7e34;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>UUID Generator</h2>
+    <button onclick="generateUUID()">Generate UUID</button>
+    <button id="copyBtn" onclick="copyUUID()">Copy</button>
+    <div class="uuid-box" id="uuidOutput">Click "Generate UUID"</div>
+  </div>
+
+  <script>
+    function generateUUID() {
+      const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+      document.getElementById('uuidOutput').textContent = uuid;
+    }
+
+    function copyUUID() {
+      const uuidText = document.getElementById('uuidOutput').textContent;
+      const tempInput = document.createElement('input');
+      tempInput.value = uuidText;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      alert("UUID copied to clipboard!");
+    }
+  </script>
+</body>
+</html>
+
+  
+  
