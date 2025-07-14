@@ -1,0 +1,122 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Regex Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f9ff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      width: 90%;
+      max-width: 600px;
+    }
+
+    h2 {
+      color: #007bff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input, .input-box {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .input-box {
+      min-height: 100px;
+      background: #f9f9f9;
+      white-space: pre-wrap;
+      overflow-y: auto;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #result {
+      margin-top: 15px;
+      background: #e7f9e9;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 16px;
+      white-space: pre-wrap;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Regex Tester</h2>
+
+    <input type="text" id="regexInput" placeholder="Enter regular expression (e.g. \\d+)" />
+    
+    <div class="input-box" id="textInput" contenteditable="true" placeholder="Enter test string here..."></div>
+
+    <button onclick="testRegex()">Test Regex</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function testRegex() {
+      const pattern = document.getElementById("regexInput").value;
+      const text = document.getElementById("textInput").innerText;
+      const resultDiv = document.getElementById("result");
+
+      try {
+        const regex = new RegExp(pattern, 'g');
+        const matches = [...text.matchAll(regex)];
+
+        if (matches.length > 0) {
+          let output = "Matches found:\n";
+          matches.forEach((match, index) => {
+            output += `${index + 1}: ${match[0]}\n`;
+          });
+          resultDiv.style.background = "#e7f9e9";
+          resultDiv.textContent = output;
+        } else {
+          resultDiv.style.background = "#fff3cd";
+          resultDiv.textContent = "No matches found.";
+        }
+      } catch (e) {
+        resultDiv.style.background = "#f8d7da";
+        resultDiv.textContent = "Invalid regular expression!";
+      }
+    }
+  </script>
+
+</body>
+</html>
+
+  
+  
