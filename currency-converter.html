@@ -1,0 +1,118 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Currency Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4faff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+    }
+
+    h1 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      padding: 12px 20px;
+      border: none;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Currency Converter</h1>
+    <input type="number" id="amount" placeholder="Enter amount" />
+    
+    <select id="fromCurrency">
+      <option value="USD">USD - US Dollar</option>
+      <option value="INR">INR - Indian Rupee</option>
+      <option value="EUR">EUR - Euro</option>
+    </select>
+
+    <select id="toCurrency">
+      <option value="INR">INR - Indian Rupee</option>
+      <option value="USD">USD - US Dollar</option>
+      <option value="EUR">EUR - Euro</option>
+    </select>
+
+    <button onclick="convertCurrency()">Convert</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    // Fixed exchange rates
+    const exchangeRates = {
+      USD: { USD: 1, INR: 83.2, EUR: 0.92 },
+      INR: { USD: 0.012, INR: 1, EUR: 0.011 },
+      EUR: { USD: 1.09, INR: 90.5, EUR: 1 }
+    };
+
+    function convertCurrency() {
+      const amount = parseFloat(document.getElementById("amount").value);
+      const from = document.getElementById("fromCurrency").value;
+      const to = document.getElementById("toCurrency").value;
+
+      if (!amount || amount <= 0) {
+        document.getElementById("result").textContent = "Please enter a valid amount.";
+        return;
+      }
+
+      const rate = exchangeRates[from][to];
+      const convertedAmount = (amount * rate).toFixed(2);
+
+      document.getElementById("result").textContent = 
+        `${amount} ${from} = ${convertedAmount} ${to}`;
+    }
+  </script>
+
+</body>
+</html>
+
+  
+  
