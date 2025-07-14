@@ -1,0 +1,99 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HEX to RGB Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4faff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    .converter {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .result {
+      font-weight: bold;
+      color: #333;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>HEX to RGB Converter</h2>
+
+  <div class="converter">
+    <input type="text" id="hexInput" placeholder="Enter HEX code e.g. #ff5733" />
+    <button onclick="convertHexToRgb()">Convert</button>
+    <div class="result" id="rgbResult">RGB: -</div>
+  </div>
+
+  <script>
+    function convertHexToRgb() {
+      const hex = document.getElementById("hexInput").value.trim();
+      const output = document.getElementById("rgbResult");
+
+      let validHex = hex.replace("#", "");
+      if (validHex.length === 3) {
+        validHex = validHex.split('').map(c => c + c).join('');
+      }
+
+      if (/^[0-9A-Fa-f]{6}$/.test(validHex)) {
+        const r = parseInt(validHex.substring(0, 2), 16);
+        const g = parseInt(validHex.substring(2, 4), 16);
+        const b = parseInt(validHex.substring(4, 6), 16);
+        output.textContent = `RGB: (${r}, ${g}, ${b})`;
+      } else {
+        output.textContent = "Invalid HEX code!";
+      }
+    }
+  </script>
+
+</body>
+</html>
+
+  
+  
