@@ -1,0 +1,87 @@
+  
+  <!DOCTYPE html>
+<html>
+<head>
+  <title>Text Shortener Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #007bff;
+      text-align: center;
+    }
+
+    #textBox {
+      width: 90%;
+      max-width: 500px;
+      min-height: 150px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #fff;
+      margin-bottom: 15px;
+      outline: none;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #output {
+      font-size: 16px;
+      margin-top: 20px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Text Shortener Tool</h2>
+
+  <div id="textBox" contenteditable="true" placeholder="Paste or type your text here..."></div>
+
+  <button onclick="shortenText()">Shorten Text</button>
+
+  <div id="output"></div>
+
+  <script>
+    function shortenText() {
+      var content = document.getElementById("textBox").innerText.trim();
+      
+      if (content.length <= 100) {
+        document.getElementById("output").innerText = "Text is already short!";
+        return;
+      }
+      
+      // Shorten text to the first 100 characters and add ellipsis
+      var shortened = content.substring(0, 100) + "...";
+      document.getElementById("output").innerText = "Shortened Text: " + shortened;
+    }
+  </script>
+
+</body>
+</html>
+
+  
+  
