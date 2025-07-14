@@ -1,0 +1,111 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Formatter & Validator Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #007bff;
+      text-align: center;
+    }
+
+    #textBox {
+      width: 90%;
+      max-width: 600px;
+      min-height: 150px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #fff;
+      margin-bottom: 15px;
+      outline: none;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #output {
+      font-size: 16px;
+      margin-top: 20px;
+      color: #333;
+      white-space: pre-wrap;
+    }
+
+    #error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>JSON Formatter & Validator Tool</h2>
+
+  <div id="textBox" contenteditable="true" placeholder="Paste your JSON code here..."></div>
+
+  <button onclick="formatAndValidateJSON()">Format & Validate JSON</button>
+
+  <div id="error"></div>
+  <div id="output"></div>
+
+  <script>
+    function formatAndValidateJSON() {
+      const content = document.getElementById("textBox").innerText.trim();
+      const errorElement = document.getElementById("error");
+      const outputElement = document.getElementById("output");
+
+      errorElement.innerText = ''; // Reset error message
+      outputElement.innerText = ''; // Reset output message
+
+      if (!content) {
+        errorElement.innerText = "Please paste valid JSON data.";
+        return;
+      }
+
+      try {
+        // Try to parse the JSON content
+        const jsonObject = JSON.parse(content);
+
+        // If parsing succeeds, format the JSON with 2 spaces
+        const formattedJSON = JSON.stringify(jsonObject, null, 2);
+
+        // Display formatted JSON
+        outputElement.innerText = "Formatted JSON:\n" + formattedJSON;
+
+      } catch (e) {
+        // If parsing fails, display error message
+        errorElement.innerText = "Invalid JSON: " + e.message;
+      }
+    }
+  </script>
+
+</body>
+</html>
+
+  
