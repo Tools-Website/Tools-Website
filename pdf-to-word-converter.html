@@ -1,0 +1,100 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF to Word Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 255, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      display: block;
+      margin: 20px auto;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 15px;
+      }
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PDF to Word Converter</h1>
+    <input type="file" id="pdfUpload" accept="application/pdf" />
+    <button onclick="convertToWord()">Convert to Word</button>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    async function convertToWord() {
+      const fileInput = document.getElementById('pdfUpload');
+      const status = document.getElementById('status');
+      if (!fileInput.files.length) {
+        status.textContent = 'Please select a PDF file.';
+        return;
+      }
+
+      const file = fileInput.files[0];
+
+      // Placeholder: Actual conversion requires backend or external API
+      status.textContent = 'Uploading and converting file...';
+
+      // Simulate delay
+      setTimeout(() => {
+        status.textContent = 'Conversion successful! Download will start shortly.';
+
+        // Simulate download
+        const blob = new Blob(["This is a mock Word document content."], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'converted.docx';
+        a.click();
+        URL.revokeObjectURL(url);
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
+  
