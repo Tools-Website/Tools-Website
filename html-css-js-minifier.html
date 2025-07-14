@@ -1,0 +1,112 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML/CSS/JS Minifier Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #007bff;
+      text-align: center;
+    }
+
+    #textBox {
+      width: 90%;
+      max-width: 600px;
+      min-height: 150px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #fff;
+      margin-bottom: 15px;
+      outline: none;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #output {
+      font-size: 16px;
+      margin-top: 20px;
+      color: #333;
+      white-space: pre-wrap;
+    }
+
+    .input-label {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>HTML/CSS/JS Minifier Tool</h2>
+
+  <div id="textBox" contenteditable="true" placeholder="Paste your HTML/CSS/JS code here..."></div>
+
+  <button onclick="minifyCode()">Minify Code</button>
+
+  <div id="output"></div>
+
+  <script>
+    function minifyHTML(html) {
+      return html.replace(/\n/g, '').replace(/\s{2,}/g, ' ').replace(/<!--.*?-->/g, ''); // Remove whitespace and comments
+    }
+
+    function minifyCSS(css) {
+      return css.replace(/\n/g, '').replace(/\s{2,}/g, ' ').replace(/\/\*.*?\*\//g, ''); // Remove whitespace and comments
+    }
+
+    function minifyJS(js) {
+      return js.replace(/\n/g, '').replace(/\s{2,}/g, ' ').replace(/\/\/.*?\n/g, ''); // Remove whitespace and comments
+    }
+
+    function minifyCode() {
+      const content = document.getElementById("textBox").innerText.trim();
+      if (!content) {
+        document.getElementById("output").innerText = "Please paste some code to minify.";
+        return;
+      }
+
+      let minifiedCode = '';
+      if (content.startsWith('<!DOCTYPE html') || content.includes('<html>')) {
+        minifiedCode = minifyHTML(content);
+      } else if (content.includes('{') && content.includes('}')) {
+        minifiedCode = minifyCSS(content);
+      } else if (content.includes('function') || content.includes('var')) {
+        minifiedCode = minifyJS(content);
+      }
+
+      document.getElementById("output").innerText = "Minified Code:\n" + minifiedCode;
+    }
+  </script>
+
+</body>
+</html>
+
+  
+  
