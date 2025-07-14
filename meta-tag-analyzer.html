@@ -1,0 +1,156 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta Tag Analyzer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fc;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    h2 {
+      color: #007bff;
+      margin-top: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .input-box {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+    .result span {
+      font-weight: bold;
+      color: #007bff;
+    }
+    .note {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+    footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #888;
+    }
+    footer a {
+      text-decoration: none;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Meta Tag Analyzer</h2>
+
+  <div class="container">
+    <label for="urlInput">Enter URL:</label>
+    <input type="text" id="urlInput" class="input-box" placeholder="Enter website URL" />
+
+    <button id="analyzeButton">Analyze Meta Tags</button>
+
+    <div id="resultContainer" class="result" style="display:none;">
+      <p><span>Title:</span> <span id="metaTitle">N/A</span></p>
+      <p><span>Description:</span> <span id="metaDescription">N/A</span></p>
+      <p><span>Keywords:</span> <span id="metaKeywords">N/A</span></p>
+      <p><span>Author:</span> <span id="metaAuthor">N/A</span></p>
+      <p><span>Charset:</span> <span id="metaCharset">N/A</span></p>
+    </div>
+
+    <p class="note">This tool analyzes the meta tags of the provided URL and extracts key metadata.</p>
+  </div>
+
+  <footer>
+    <p>Designed by <a href="https://example.com" target="_blank">YourName</a></p>
+  </footer>
+
+  <script>
+    const urlInput = document.getElementById('urlInput');
+    const analyzeButton = document.getElementById('analyzeButton');
+    const resultContainer = document.getElementById('resultContainer');
+    const metaTitle = document.getElementById('metaTitle');
+    const metaDescription = document.getElementById('metaDescription');
+    const metaKeywords = document.getElementById('metaKeywords');
+    const metaAuthor = document.getElementById('metaAuthor');
+    const metaCharset = document.getElementById('metaCharset');
+
+    // Function to fetch meta tags from the provided URL
+    async function fetchMetaTags(url) {
+      try {
+        // Fetch the webpage HTML
+        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+        const html = await response.text();
+
+        // Create a temporary DOM element to parse the HTML content
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        // Extract meta tag content
+        const title = doc.querySelector('title') ? doc.querySelector('title').innerText : 'N/A';
+        const description = doc.querySelector('meta[name="description"]') ? doc.querySelector('meta[name="description"]').getAttribute('content') : 'N/A';
+        const keywords = doc.querySelector('meta[name="keywords"]') ? doc.querySelector('meta[name="keywords"]').getAttribute('content') : 'N/A';
+        const author = doc.querySelector('meta[name="author"]') ? doc.querySelector('meta[name="author"]').getAttribute('content') : 'N/A';
+        const charset = doc.querySelector('meta[charset]') ? doc.querySelector('meta[charset]').getAttribute('charset') : 'N/A';
+
+        // Update the UI with the extracted values
+        metaTitle.textContent = title;
+        metaDescription.textContent = description;
+        metaKeywords.textContent = keywords;
+        metaAuthor.textContent = author;
+        metaCharset.textContent = charset;
+
+        // Show the result container
+        resultContainer.style.display = 'block';
+      } catch (error) {
+        alert("Error: Unable to fetch meta tags. Please check the URL.");
+      }
+    }
+
+    // Event listener to trigger the analysis
+    analyzeButton.addEventListener('click', () => {
+      const url = urlInput.value.trim();
+      if (url) {
+        fetchMetaTags(url);
+      } else {
+        alert('Please enter a valid URL.');
+      }
+    });
+  </script>
+
+</body>
+</html>
+
+  
+  
