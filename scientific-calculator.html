@@ -1,0 +1,162 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Scientific Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .calculator {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        #display {
+            width: 100%;
+            height: 50px;
+            font-size: 1.5rem;
+            text-align: right;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        .button {
+            width: 60px;
+            height: 60px;
+            margin: 5px;
+            font-size: 1.5rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .button:active {
+            background-color: #0056b3;
+        }
+
+        .button.double {
+            width: 130px;
+        }
+
+        .button.clear {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+        .button.equals {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .button.function {
+            background-color: #17a2b8;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <input type="text" id="display" disabled />
+        <div>
+            <button class="button" onclick="appendToDisplay('7')">7</button>
+            <button class="button" onclick="appendToDisplay('8')">8</button>
+            <button class="button" onclick="appendToDisplay('9')">9</button>
+            <button class="button function" onclick="appendToDisplay('/')">/</button>
+        </div>
+        <div>
+            <button class="button" onclick="appendToDisplay('4')">4</button>
+            <button class="button" onclick="appendToDisplay('5')">5</button>
+            <button class="button" onclick="appendToDisplay('6')">6</button>
+            <button class="button function" onclick="appendToDisplay('*')">*</button>
+        </div>
+        <div>
+            <button class="button" onclick="appendToDisplay('1')">1</button>
+            <button class="button" onclick="appendToDisplay('2')">2</button>
+            <button class="button" onclick="appendToDisplay('3')">3</button>
+            <button class="button function" onclick="appendToDisplay('-')">-</button>
+        </div>
+        <div>
+            <button class="button" onclick="appendToDisplay('0')">0</button>
+            <button class="button" onclick="appendToDisplay('.')">.</button>
+            <button class="button double" onclick="clearDisplay()">C</button>
+            <button class="button function" onclick="appendToDisplay('+')">+</button>
+        </div>
+        <div>
+            <button class="button function" onclick="appendToDisplay('sqrt(')">√</button>
+            <button class="button function" onclick="appendToDisplay('pow(')">x²</button>
+            <button class="button function" onclick="appendToDisplay('sin(')">sin</button>
+            <button class="button function" onclick="appendToDisplay('cos(')">cos</button>
+        </div>
+        <div>
+            <button class="button function" onclick="appendToDisplay('tan(')">tan</button>
+            <button class="button function" onclick="appendToDisplay('log(')">log</button>
+            <button class="button function" onclick="appendToDisplay('exp(')">exp</button>
+            <button class="button equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+
+        // Append values to the display
+        function appendToDisplay(value) {
+            display.value += value;
+        }
+
+        // Clear the display
+        function clearDisplay() {
+            display.value = '';
+        }
+
+        // Evaluate the expression and show the result
+        function calculate() {
+            try {
+                // Replace square root and powers for easier eval() interpretation
+                let expression = display.value;
+                expression = expression.replace(/sqrt/g, 'Math.sqrt');
+                expression = expression.replace(/pow/g, 'Math.pow');
+                expression = expression.replace(/log/g, 'Math.log');
+                expression = expression.replace(/exp/g, 'Math.exp');
+                expression = expression.replace(/sin/g, 'Math.sin');
+                expression = expression.replace(/cos/g, 'Math.cos');
+                expression = expression.replace(/tan/g, 'Math.tan');
+
+                // Calculate the result
+                const result = eval(expression);
+                display.value = result;
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+    </script>
+
+</body>
+</html>
+
+  
+  
