@@ -1,0 +1,84 @@
+  
+
+  <!DOCTYPE html>
+<html>
+<head>
+  <title>Word and Character Counter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #007bff;
+    }
+
+    #textBox {
+      width: 90%;
+      max-width: 500px;
+      min-height: 120px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #fff;
+      margin-bottom: 15px;
+      outline: none;
+      overflow-y: auto;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background: #007bff;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #output {
+      margin-top: 15px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Word and Character Counter</h2>
+
+  <div id="textBox" contenteditable="true" placeholder="Enter your text here..."></div>
+
+  <button onclick="countText()">Count Words & Characters</button>
+
+  <div id="output">
+    <p><strong>Word Count:</strong> <span id="wordCount">0</span></p>
+    <p><strong>Character Count:</strong> <span id="charCount">0</span></p>
+  </div>
+
+  <script>
+    function countText() {
+      var text = document.getElementById("textBox").innerText.trim();
+      var words = text.split(/\s+/).filter(Boolean);
+      var characters = text.length;
+
+      document.getElementById("wordCount").textContent = words.length;
+      document.getElementById("charCount").textContent = characters;
+    }
+  </script>
+
+</body>
+</html>
+
+  
+  
