@@ -1,0 +1,153 @@
+  
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Blindness Simulator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="file"] {
+      margin: 20px 0;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: #f1f1f1;
+      border: 1px solid #ddd;
+    }
+
+    select {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      margin-top: 10px;
+      background-color: #f1f1f1;
+      border: 1px solid #ddd;
+    }
+
+    .image-container {
+      margin-top: 20px;
+      position: relative;
+      text-align: center;
+    }
+
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      transition: filter 0.3s ease;
+      object-fit: cover;
+    }
+
+    .note {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #888;
+    }
+
+    footer a {
+      text-decoration: none;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Color Blindness Simulator</h2>
+
+  <div class="container">
+    <input type="file" id="imageInput" accept="image/*">
+    
+    <div class="image-container">
+      <img id="imagePreview" src="" alt="Upload an image to preview">
+    </div>
+
+    <select id="colorBlindnessType">
+      <option value="normal">Normal Vision</option>
+      <option value="deuteranopia">Deuteranopia (Red-Green)</option>
+      <option value="protanopia">Protanopia (Red-Green)</option>
+      <option value="tritanopia">Tritanopia (Blue-Yellow)</option>
+    </select>
+
+    <p class="note">Select the type of color blindness simulation on the image.</p>
+  </div>
+
+  <footer>
+    <p>Designed by <a href="https://example.com" target="_blank">YourName</a></p>
+  </footer>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const colorBlindnessType = document.getElementById('colorBlindnessType');
+
+    // Function to apply the color blindness filter using CSS
+    function applyColorBlindnessFilter() {
+      const selectedType = colorBlindnessType.value;
+      const image = imagePreview;
+
+      switch (selectedType) {
+        case 'normal':
+          image.style.filter = 'none';
+          break;
+        case 'deuteranopia':
+          image.style.filter = 'contrast(100%) saturate(150%) hue-rotate(50deg)';
+          break;
+        case 'protanopia':
+          image.style.filter = 'contrast(100%) saturate(150%) hue-rotate(-50deg)';
+          break;
+        case 'tritanopia':
+          image.style.filter = 'contrast(100%) saturate(150%) hue-rotate(170deg)';
+          break;
+        default:
+          image.style.filter = 'none';
+      }
+    }
+
+    // Preview the uploaded image
+    imageInput.addEventListener('change', function (e) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        imagePreview.src = event.target.result;
+        applyColorBlindnessFilter();  // Apply filter immediately after image is uploaded
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    });
+
+    // Update filter on color blindness type change
+    colorBlindnessType.addEventListener('change', applyColorBlindnessFilter);
+  </script>
+
+</body>
+</html>
+
+  
+  
