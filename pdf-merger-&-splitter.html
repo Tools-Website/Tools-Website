@@ -1,0 +1,169 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF Merger & Splitter</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      color: #007BFF;
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="file"], input[type="text"] {
+      display: block;
+      margin: 1rem auto;
+    }
+
+    .button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 1rem 0.5rem 0;
+    }
+
+    .button:disabled {
+      background-color: #a6c8ff;
+      cursor: not-allowed;
+    }
+
+    #downloadLink {
+      display: none;
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .button {
+        display: block;
+        margin: 1rem auto 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PDF Merger & Splitter</h1>
+
+    <!-- Merger -->
+    <h2 style="color: #007BFF">Merge PDFs</h2>
+    <input type="file" id="mergeInput" accept="application/pdf" multiple />
+    <button class="button" id="mergeBtn" disabled>Merge PDFs</button>
+
+    <!-- Splitter -->
+    <h2 style="color: #007BFF">Split PDF</h2>
+    <input type="file" id="splitInput" accept="application/pdf" />
+    <input type="text" id="splitPages" placeholder="e.g., 1,3-5" />
+    <button class="button" id="splitBtn" disabled>Split PDF</button>
+
+    <a id="downloadLink" class="button" download>Download</a>
+  </div>
+
+  <script type="module">
+    import { PDFDocument } from 'https://cdn.skypack.dev/pdf-lib';
+
+    const mergeInput = document.getElementById('mergeInput');
+    const splitInput = document.getElementById('splitInput');
+    const splitPages = document.getElementById('splitPages');
+    const mergeBtn = document.getElementById('mergeBtn');
+    const splitBtn = document.getElementById('splitBtn');
+    const downloadLink = document.getElementById('downloadLink');
+
+    let mergeFiles = [];
+    let splitFile;
+
+    mergeInput.addEventListener('change', (e) => {
+      mergeFiles = Array.from(e.target.files);
+      mergeBtn.disabled = mergeFiles.length < 2;
+    });
+
+    splitInput.addEventListener('change', (e) => {
+      splitFile = e.target.files[0];
+      splitBtn.disabled = !splitFile;
+    });
+
+    mergeBtn.addEventListener('click', async () => {
+      const mergedPdf = await PDFDocument.create();
+
+      for (const file of mergeFiles) {
+        const bytes = await file.arrayBuffer();
+        const pdf = await PDFDocument.load(bytes);
+        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        copiedPages.forEach(page => mergedPdf.addPage(page));
+      }
+
+      const mergedBytes = await mergedPdf.save();
+      const blob = new Blob([mergedBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+
+      downloadLink.href = url;
+      downloadLink.download = 'merged.pdf';
+      downloadLink.style.display = 'inline-block';
+    });
+
+    splitBtn.addEventListener('click', async () => {
+      const bytes = await splitFile.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(bytes);
+
+      const splitPdf = await PDFDocument.create();
+      const input = splitPages.value;
+      const pageIndices = parsePageInput(input, pdfDoc.getPageCount());
+
+      const pages = await splitPdf.copyPages(pdfDoc, pageIndices);
+      pages.forEach((page) => splitPdf.addPage(page));
+
+      const splitBytes = await splitPdf.save();
+      const blob = new Blob([splitBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+
+      downloadLink.href = url;
+      downloadLink.download = 'split.pdf';
+      downloadLink.style.display = 'inline-block';
+    });
+
+    function parsePageInput(input, maxPages) {
+      const ranges = input.split(',');
+      const pages = new Set();
+
+      for (const range of ranges) {
+        if (range.includes('-')) {
+          const [start, end] = range.split('-').map(num => parseInt(num.trim(), 10) - 1);
+          for (let i = start; i <= end && i < maxPages; i++) {
+            pages.add(i);
+          }
+        } else {
+          const index = parseInt(range.trim(), 10) - 1;
+          if (!isNaN(index) && index < maxPages) pages.add(index);
+        }
+      }
+
+      return Array.from(pages);
+    }
+  </script>
+</body>
+</html>
+
+  
+  
