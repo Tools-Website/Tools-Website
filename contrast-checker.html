@@ -1,0 +1,131 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contrast Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0faff;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    .checker-box {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .color-selectors {
+      margin-bottom: 15px;
+    }
+
+    input[type="color"] {
+      margin: 10px;
+      width: 100px;
+      height: 50px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .preview-box {
+      padding: 20px;
+      margin-top: 15px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .contrast-result {
+      margin-top: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Contrast Checker Tool</h2>
+
+  <div class="checker-box">
+    <div class="color-selectors">
+      <label>Text Color</label><br />
+      <input type="color" id="textColor" value="#000000" />
+    </div>
+
+    <div class="color-selectors">
+      <label>Background Color</label><br />
+      <input type="color" id="bgColor" value="#ffffff" />
+    </div>
+
+    <button onclick="checkContrast()">Check Contrast</button>
+
+    <div class="preview-box" id="previewText">Sample Text</div>
+    <div class="contrast-result" id="contrastResult">Contrast Ratio: -</div>
+  </div>
+
+  <script>
+    function luminance(r, g, b) {
+      const a = [r, g, b].map(v => {
+        v /= 255;
+        return v <= 0.03928
+          ? v / 12.92
+          : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    function getRGB(hex) {
+      hex = hex.replace('#', '');
+      if (hex.length === 3) {
+        hex = hex.split('').map(c => c + c).join('');
+      }
+      const bigint = parseInt(hex, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return [r, g, b];
+    }
+
+    function contrastRatio(hex1, hex2) {
+      const [r1, g1, b1] = getRGB(hex1);
+      const [r2, g2, b2] = getRGB(hex2);
+      const lum1 = luminance(r1, g1, b1);
+      const lum2 = luminance(r2, g2, b2);
+      const brightest = Math.max(lum1, lum2);
+      const darkest = Math.min(lum1, lum2);
+      return ((brightest + 0.05) / (darkest + 0.05)).toFixed(2);
+    }
+
+    function checkContrast() {
+      const textColor = document.getElementById("textColor").value;
+      const bgColor = document.getElementById("bgColor").value;
+
+      const ratio = contrastRatio(textColor, bgColor);
+      const result = document.getElementById("contrastResult");
+      const preview = document.getElementById("previewText");
+
+      preview.style.color = textColor;
+      preview.style.backgroundColor = bgColor;
+      result.textContent = `Contrast Ratio: ${ratio} (${ratio >= 4.5 ? "Pass" : "Fail"})`;
+    }
+  </script>
+
+</body>
+</html>
+
+  
+  
