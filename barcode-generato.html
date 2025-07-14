@@ -1,0 +1,119 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Barcode Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef8ff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+    }
+
+    h2 {
+      color: #007bff;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #barcode {
+      margin-top: 20px;
+    }
+
+    #downloadBtn {
+      display: none;
+      margin-top: 15px;
+      background-color: #28a745;
+    }
+
+    #downloadBtn:hover {
+      background-color: #1e7e34;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Barcode Generator</h2>
+    <input type="text" id="barcodeText" placeholder="Enter text or number" />
+    <button onclick="generateBarcode()">Generate Barcode</button>
+    <div id="barcode">
+      <svg id="barcodeSvg"></svg>
+    </div>
+    <button id="downloadBtn" onclick="downloadBarcode()">Download Barcode</button>
+  </div>
+
+  <!-- JsBarcode CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <script>
+    function generateBarcode() {
+      const text = document.getElementById("barcodeText").value.trim();
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      if (text === "") {
+        alert("Please enter some text.");
+        return;
+      }
+
+      JsBarcode("#barcodeSvg", text, {
+        format: "CODE128",
+        lineColor: "#000",
+        width: 2,
+        height: 100,
+        displayValue: true
+      });
+
+      downloadBtn.style.display = "inline-block";
+    }
+
+    function downloadBarcode() {
+      const svg = document.getElementById("barcodeSvg");
+      const serializer = new XMLSerializer();
+      const source = serializer.serializeToString(svg);
+      const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "barcode.svg";
+      link.click();
+    }
+  </script>
+</body>
+</html>
+
+  
