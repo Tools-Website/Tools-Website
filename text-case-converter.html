@@ -1,0 +1,86 @@
+  
+  
+  <div style="text-align:center;">
+  <h2>Text Case Converter</h2>
+  <input type="text" id="inputArea" style="width:90%;max-width:500px;height:120px;padding:10px;font-size:16px;border-radius:8px;border:1px solid #ccc;" placeholder="Enter text here..."><br>
+
+  <button onclick="toUpper()" style="margin:5px;padding:10px 15px;background:#007bff;color:#fff;border:none;border-radius:8px;">UPPERCASE</button>
+  <button onclick="toLower()" style="margin:5px;padding:10px 15px;background:#007bff;color:#fff;border:none;border-radius:8px;">lowercase</button>
+  <button onclick="toSentence()" style="margin:5px;padding:10px 15px;background:#007bff;color:#fff;border:none;border-radius:8px;">Sentence case</button>
+  <button onclick="toCapital()" style="margin:5px;padding:10px 15px;background:#007bff;color:#fff;border:none;border-radius:8px;">Capitalized Case</button>
+  <button onclick="clearText()" style="margin:5px;padding:10px 15px;background:#007bff;color:#fff;border:none;border-radius:8px;">Clear</button>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+function toUpper() {
+  var t = document.getElementById("inputArea");
+  t.value = t.value.toUpperCase();
+}
+
+function toLower() {
+  var t = document.getElementById("inputArea");
+  t.value = t.value.toLowerCase();
+}
+
+function toSentence() {
+  var t = document.getElementById("inputArea");
+  let txt = t.value.toLowerCase();
+  t.value = txt.charAt(0).toUpperCase() + txt.slice(1);
+}
+
+function toCapital() {
+  var t = document.getElementById("inputArea");
+  let words = t.value.toLowerCase().split(" ");
+  for (let i = 0; i < words.length; i++) {
+    if (words[i]) {
+      words[i] = words[i][0].toUpperCase() + words[i].slice(1);
+    }
+  }
+  t.value = words.join(" ");
+}
+
+function clearText() {
+  var t = document.getElementById("inputArea");
+  t.value = "";
+}
+//]]>
+</script>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f8ff;
+    padding: 20px;
+    text-align: center;
+  }
+
+  input[type="text"] {
+    width: 90%;
+    max-width: 500px;
+    height: 120px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+
+  button {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #0056b3;
+  }
+</style>
+
+  
+  
