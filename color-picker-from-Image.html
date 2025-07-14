@@ -1,0 +1,121 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Color Picker from Image</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+    }
+
+    canvas {
+      max-width: 100%;
+      width: 300px;
+      height: auto;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+
+    .color-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .color-box {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #000;
+      border-radius: 6px;
+    }
+
+    .color-code {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Color Picker from Image</h2>
+
+  <input type="file" id="imageInput" accept="image/*" />
+
+  <canvas id="canvas"></canvas>
+
+  <div class="color-info">
+    <div class="color-box" id="pickedColor"></div>
+    <div class="color-code" id="colorCode">Click on image</div>
+  </div>
+
+  <script>
+    const imageInput = document.getElementById("imageInput");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const pickedColor = document.getElementById("pickedColor");
+    const colorCode = document.getElementById("colorCode");
+
+    imageInput.addEventListener("change", function () {
+      const file = this.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          const scale = 300 / img.width; // scale to fit width
+          const scaledWidth = 300;
+          const scaledHeight = img.height * scale;
+
+          canvas.width = scaledWidth;
+          canvas.height = scaledHeight;
+          ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    canvas.addEventListener("click", function (e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const pixel = ctx.getImageData(x, y, 1, 1).data;
+      const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+
+      pickedColor.style.backgroundColor = hex;
+      colorCode.textContent = `HEX: ${hex} | RGB: (${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+    });
+
+    function rgbToHex(r, g, b) {
+      return "#" + [r, g, b].map(x => {
+        const hex = x.toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+      }).join("");
+    }
+  </script>
+
+</body>
+</html>
+
+  
+  
