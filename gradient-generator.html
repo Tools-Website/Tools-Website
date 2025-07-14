@@ -1,0 +1,118 @@
+  
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gradient Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    .generator-box {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="color"],
+    select,
+    input[type="text"] {
+      margin: 10px 5px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 45%;
+    }
+
+    .preview {
+      margin-top: 20px;
+      height: 150px;
+      border-radius: 8px;
+      border: 2px solid #007bff;
+    }
+
+    .css-output {
+      margin-top: 10px;
+      font-weight: bold;
+      word-break: break-word;
+      color: #333;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>CSS Gradient Generator</h2>
+
+  <div class="generator-box">
+    <div>
+      <input type="color" id="color1" value="#ff7f50" />
+      <input type="color" id="color2" value="#1e90ff" />
+    </div>
+
+    <div>
+      <select id="direction">
+        <option value="to right">Left to Right</option>
+        <option value="to left">Right to Left</option>
+        <option value="to bottom">Top to Bottom</option>
+        <option value="to top">Bottom to Top</option>
+        <option value="to top left">Bottom Right to Top Left</option>
+        <option value="to bottom right">Top Left to Bottom Right</option>
+      </select>
+    </div>
+
+    <button onclick="generateGradient()">Generate Gradient</button>
+
+    <div class="preview" id="previewBox"></div>
+    <div class="css-output" id="cssCode">CSS Code: -</div>
+  </div>
+
+  <script>
+    function generateGradient() {
+      const color1 = document.getElementById("color1").value;
+      const color2 = document.getElementById("color2").value;
+      const direction = document.getElementById("direction").value;
+
+      const gradient = `linear-gradient(${direction}, ${color1}, ${color2})`;
+
+      const previewBox = document.getElementById("previewBox");
+      previewBox.style.background = gradient;
+
+      const cssOutput = document.getElementById("cssCode");
+      cssOutput.textContent = `background: ${gradient};`;
+    }
+  </script>
+
+</body>
+</html>
+ 
+  
+  
