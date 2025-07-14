@@ -1,0 +1,145 @@
+  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyword Density Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fc;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    h2 {
+      color: #007bff;
+      margin-top: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .input-box {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      min-height: 100px;
+      resize: none;
+      overflow-y: auto;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+    .note {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+    footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #888;
+    }
+    footer a {
+      text-decoration: none;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Keyword Density Checker</h2>
+
+  <div class="container">
+    <label for="textInput">Enter Text:</label>
+    <div id="textInput" class="input-box" contenteditable="true" placeholder="Paste your text here..."></div>
+
+    <label for="keywordInput">Enter Keyword:</label>
+    <input type="text" id="keywordInput" class="input-box" placeholder="Enter keyword to check density">
+
+    <button id="checkButton">Check Density</button>
+
+    <div id="resultContainer" class="result" style="display:none;">
+      <p><strong>Keyword Density:</strong> <span id="densityResult">0</span>%</p>
+      <p><strong>Keyword Count:</strong> <span id="keywordCount">0</span> occurrences</p>
+      <p><strong>Total Word Count:</strong> <span id="totalWords">0</span> words</p>
+    </div>
+
+    <p class="note">This tool calculates the percentage of a given keyword in the text you provide.</p>
+  </div>
+
+  <footer>
+    <p>Designed by <a href="https://example.com" target="_blank">YourName</a></p>
+  </footer>
+
+  <script>
+    const textInput = document.getElementById('textInput');
+    const keywordInput = document.getElementById('keywordInput');
+    const checkButton = document.getElementById('checkButton');
+    const resultContainer = document.getElementById('resultContainer');
+    const densityResult = document.getElementById('densityResult');
+    const keywordCount = document.getElementById('keywordCount');
+    const totalWords = document.getElementById('totalWords');
+
+    // Function to calculate keyword density
+    function calculateKeywordDensity() {
+      const text = textInput.textContent.trim();
+      const keyword = keywordInput.value.trim().toLowerCase();
+      if (!text || !keyword) {
+        alert("Please enter both text and a keyword.");
+        return;
+      }
+
+      const words = text.split(/\s+/);
+      const totalWordCount = words.length;
+
+      let keywordCountValue = 0;
+      words.forEach(word => {
+        if (word.toLowerCase() === keyword) {
+          keywordCountValue++;
+        }
+      });
+
+      const density = (keywordCountValue / totalWordCount) * 100;
+
+      // Display the results
+      keywordCount.textContent = keywordCountValue;
+      totalWords.textContent = totalWordCount;
+      densityResult.textContent = density.toFixed(2);
+
+      resultContainer.style.display = 'block';
+    }
+
+    // Event listener to trigger the density calculation
+    checkButton.addEventListener('click', calculateKeywordDensity);
+  </script>
+
+</body>
+</html>
+
+
+  
