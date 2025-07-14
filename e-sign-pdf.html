@@ -1,0 +1,163 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>eSign PDF Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            background-color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #signaturePadContainer {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 80%;
+            }
+        }
+    </style>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>eSign PDF Tool</h1>
+        
+        <input type="file" id="pdfInput" accept="application/pdf" />
+        <div id="signaturePadContainer">
+            <canvas id="signaturePadCanvas" width="400" height="200"></canvas>
+        </div>
+        <button id="clearBtn">Clear Signature</button>
+        <button id="downloadBtn" disabled>Download Signed PDF</button>
+    </div>
+
+    <script>
+        const pdfInput = document.getElementById("pdfInput");
+        const signaturePadCanvas = document.getElementById("signaturePadCanvas");
+        const clearBtn = document.getElementById("clearBtn");
+        const downloadBtn = document.getElementById("downloadBtn");
+
+        let signaturePad;
+        let pdfDocBytes;
+
+        // Initialize the signature pad
+        signaturePad = new SignaturePad(signaturePadCanvas);
+
+        // Handle the file input to load PDF data
+        pdfInput.addEventListener("change", handlePdfUpload);
+
+        // Clear signature when the button is clicked
+        clearBtn.addEventListener("click", () => {
+            signaturePad.clear();
+            downloadBtn.disabled = true; // Disable download button until signature is made
+        });
+
+        // Handle PDF upload
+        async function handlePdfUpload(event) {
+            const file = event.target.files[0];
+            if (file && file.type === "application/pdf") {
+                // Read the PDF file as an array buffer
+                const reader = new FileReader();
+                reader.onload = async function (e) {
+                    pdfDocBytes = e.target.result;
+                    downloadBtn.disabled = false; // Enable the download button
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                alert("Please upload a valid PDF file.");
+            }
+        }
+
+        // Create the signed PDF and trigger download
+        downloadBtn.addEventListener("click", async () => {
+            if (signaturePad.isEmpty()) {
+                alert("Please draw your signature.");
+                return;
+            }
+
+            try {
+                const pdfDoc = await PDFLib.PDFDocument.load(pdfDocBytes);
+                const pngImageBytes = signaturePad.toDataURL().split(',')[1]; // Convert to base64 PNG
+                const pngImage = await pdfDoc.embedPng(pngImageBytes);
+
+                const pages = pdfDoc.getPages();
+                const firstPage = pages[0];
+
+                // Draw the signature at specific coordinates (x, y)
+                const { width, height } = firstPage.getSize();
+                firstPage.drawImage(pngImage, {
+                    x: width - 300,
+                    y: height - 150,
+                    width: 150,
+                    height: 75
+                });
+
+                // Save the signed PDF
+                const signedPdfBytes = await pdfDoc.save();
+
+                // Create a blob and trigger the download
+                const blob = new Blob([signedPdfBytes], { type: "application/pdf" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "signed_pdf.pdf";
+                a.click();
+            } catch (err) {
+                console.error("Error signing PDF: ", err);
+            }
+        });
+    </script>
+</body>
+</html>
+  
+  
