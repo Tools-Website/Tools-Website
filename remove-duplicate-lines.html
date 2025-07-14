@@ -1,0 +1,74 @@
+  
+  
+  <!DOCTYPE html>
+<html>
+<head>
+  <title>Remove Duplicate Lines Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #007bff;
+      text-align: center;
+    }
+
+    #textBox {
+      width: 90%;
+      max-width: 500px;
+      min-height: 150px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #fff;
+      margin-bottom: 15px;
+      outline: none;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Remove Duplicate Lines</h2>
+
+  <div id="textBox" contenteditable="true" placeholder="Paste or type lines here..."></div>
+
+  <button onclick="removeDuplicates()">Remove Duplicates</button>
+
+  <script>
+    function removeDuplicates() {
+      var content = document.getElementById("textBox").innerText;
+      var lines = content.split('\n');
+      var uniqueLines = [...new Set(lines.map(line => line.trim()))].filter(line => line !== "");
+      document.getElementById("textBox").innerText = uniqueLines.join('\n');
+    }
+  </script>
+
+</body>
+</html>
+
+  
+  
