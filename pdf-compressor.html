@@ -1,0 +1,108 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF Compressor</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #333;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      color: #007BFF;
+    }
+
+    input[type="file"] {
+      display: block;
+      margin: 1rem auto;
+    }
+
+    .button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    .button:disabled {
+      background-color: #a6c8ff;
+      cursor: not-allowed;
+    }
+
+    #downloadLink {
+      display: none;
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PDF Compressor</h1>
+    <input type="file" id="pdfInput" accept="application/pdf" />
+    <button class="button" id="compressBtn" disabled>Compress PDF</button>
+    <a id="downloadLink" class="button" download="compressed.pdf">Download Compressed PDF</a>
+  </div>
+
+  <script type="module">
+    import { PDFDocument } from 'https://cdn.skypack.dev/pdf-lib';
+
+    const pdfInput = document.getElementById('pdfInput');
+    const compressBtn = document.getElementById('compressBtn');
+    const downloadLink = document.getElementById('downloadLink');
+    let originalPDF;
+
+    pdfInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file && file.type === 'application/pdf') {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          originalPDF = e.target.result;
+          compressBtn.disabled = false;
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        compressBtn.disabled = true;
+      }
+    });
+
+    compressBtn.addEventListener('click', async () => {
+      const pdfDoc = await PDFDocument.load(originalPDF);
+
+      // Basic compression by copying pages to a new PDF
+      const compressedPdf = await PDFDocument.create();
+      const pages = await compressedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
+      pages.forEach((page) => compressedPdf.addPage(page));
+
+      const compressedBytes = await compressedPdf.save();
+      const blob = new Blob([compressedBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      downloadLink.href = url;
+      downloadLink.style.display = 'inline-block';
+    });
+  </script>
+</body>
+</html>
+
+  
