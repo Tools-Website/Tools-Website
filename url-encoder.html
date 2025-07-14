@@ -1,0 +1,109 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>URL Encoder / Decoder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5faff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #007bff;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .input-box {
+      width: 90%;
+      max-width: 600px;
+      min-height: 100px;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      white-space: pre-wrap;
+      outline: none;
+      overflow-y: auto;
+    }
+
+    .button-group {
+      margin-bottom: 15px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #result {
+      width: 90%;
+      max-width: 600px;
+      background: #e9f7ff;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 16px;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>URL Encoder / Decoder</h2>
+
+  <div id="urlInput" class="input-box" contenteditable="true" placeholder="Enter text here..."></div>
+
+  <div class="button-group">
+    <button onclick="encodeURL()">Encode</button>
+    <button onclick="decodeURL()">Decode</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    function encodeURL() {
+      const input = document.getElementById("urlInput").innerText.trim();
+      try {
+        const encoded = encodeURIComponent(input);
+        document.getElementById("result").innerText = "Encoded URL:\n" + encoded;
+      } catch (e) {
+        document.getElementById("result").innerText = "Error encoding URL.";
+      }
+    }
+
+    function decodeURL() {
+      const input = document.getElementById("urlInput").innerText.trim();
+      try {
+        const decoded = decodeURIComponent(input);
+        document.getElementById("result").innerText = "Decoded URL:\n" + decoded;
+      } catch (e) {
+        document.getElementById("result").innerText = "Invalid encoded URL.";
+      }
+    }
+  </script>
+
+</body>
+</html>
+
+  
+  
