@@ -1,0 +1,163 @@
+  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Color Picker & Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f9ff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .picker-box {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    input[type="color"] {
+      width: 100px;
+      height: 50px;
+      border: none;
+      margin-bottom: 15px;
+    }
+
+    .color-code {
+      margin-top: 10px;
+      padding: 10px;
+      background: #e9f7ff;
+      border-radius: 8px;
+      font-size: 16px;
+      word-break: break-word;
+    }
+
+    .rgb-inputs {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .rgb-inputs input {
+      width: 60px;
+      padding: 6px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background-color: #007bff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #colorPreview {
+      margin-top: 15px;
+      width: 100%;
+      height: 40px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Color Picker & Converter</h2>
+
+  <div class="picker-box">
+    <input type="color" id="colorInput" />
+
+    <div id="hexCode" class="color-code"></div>
+    <div id="rgbCode" class="color-code"></div>
+
+    <div class="rgb-inputs">
+      <input type="number" id="r" placeholder="R" min="0" max="255">
+      <input type="number" id="g" placeholder="G" min="0" max="255">
+      <input type="number" id="b" placeholder="B" min="0" max="255">
+    </div>
+
+    <button onclick="convertRGBtoHex()">Convert RGB to HEX</button>
+
+    <div id="colorPreview"></div>
+  </div>
+
+  <script>
+    const colorInput = document.getElementById('colorInput');
+    const hexCode = document.getElementById('hexCode');
+    const rgbCode = document.getElementById('rgbCode');
+    const colorPreview = document.getElementById('colorPreview');
+
+    colorInput.addEventListener('input', function () {
+      const hex = colorInput.value.toUpperCase();
+      hexCode.textContent = "HEX: " + hex;
+
+      const rgb = hexToRgb(hex);
+      if (rgb) {
+        rgbCode.textContent = "RGB: rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")";
+        colorPreview.style.backgroundColor = hex;
+      }
+    });
+
+    function hexToRgb(hex) {
+      hex = hex.replace('#', '');
+      if (hex.length !== 6) return null;
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return { r, g, b };
+    }
+
+    function componentToHex(c) {
+      const hex = c.toString(16);
+      return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    function convertRGBtoHex() {
+      const r = parseInt(document.getElementById('r').value);
+      const g = parseInt(document.getElementById('g').value);
+      const b = parseInt(document.getElementById('b').value);
+
+      if (
+        isNaN(r) || isNaN(g) || isNaN(b) ||
+        r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255
+      ) {
+        alert("Please enter valid RGB values between 0 and 255.");
+        return;
+      }
+
+      const hex = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+      colorInput.value = hex;
+      colorInput.dispatchEvent(new Event('input'));
+    }
+  </script>
+
+</body>
+</html>
+  
+  
