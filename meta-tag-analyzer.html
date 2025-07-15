@@ -1,157 +1,621 @@
-  
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="faveicon .png" type="image/x-icon">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meta Tag Analyzer</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f7fc;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    h2 {
-      color: #007bff;
-      margin-top: 20px;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    .input-box {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .result {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #333;
-    }
-    .result span {
-      font-weight: bold;
-      color: #007bff;
-    }
-    .note {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #555;
-    }
-    footer {
-      margin-top: 30px;
-      font-size: 14px;
-      color: #888;
-    }
-    footer a {
-      text-decoration: none;
-      color: #007bff;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Tag Analyzer | My Multi-Tool Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Basic Setup & Theme --- */
+        :root {
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --background-color: #f4f7fc;
+            --card-bg-color: #ffffff;
+            --text-color: #333;
+            --light-text-color: #6c757d;
+            --border-color: #e9ecef;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --error-color: #dc3545;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--light-text-color);
+        }
+
+        /* --- Form & Button --- */
+        #analyze-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        #url-input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        #url-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        #analyze-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: var(--card-bg-color);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #analyze-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* --- Loader & Messages --- */
+        .hidden {
+            display: none !important;
+        }
+
+        #loader {
+            text-align: center;
+            padding: 2rem;
+            color: var(--light-text-color);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* --- Results Section --- */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        #analyzed-url-title {
+            font-size: 1.5rem;
+            word-break: break-all;
+        }
+
+        #view-source-btn {
+            padding: 0.5rem 1rem;
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #view-source-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        #results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .result-card {
+            background-color: var(--card-bg-color);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .card-content {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--background-color);
+            padding: 0.75rem;
+            border-radius: 4px;
+            word-break: break-word;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .card-content.not-found {
+            color: var(--light-text-color);
+            font-style: italic;
+        }
+
+        .card-analysis {
+            font-size: 0.9rem;
+        }
+        .card-analysis p {
+            margin-bottom: 0.5rem;
+        }
+        .card-analysis span {
+            font-weight: 500;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-good { color: var(--success-color); }
+        .status-good .status-indicator { background-color: var(--success-color); }
+        .status-warning { color: var(--warning-color); }
+        .status-warning .status-indicator { background-color: var(--warning-color); }
+        .status-bad { color: var(--error-color); }
+        .status-bad .status-indicator { background-color: var(--error-color); }
+
+        /* --- SERP Preview Card --- */
+        .serp-preview {
+            grid-column: 1 / -1; /* Span full width */
+        }
+        .preview-box {
+            background-color: var(--card-bg-color);
+            padding: 1rem;
+        }
+        .preview-url {
+            color: var(--light-text-color);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .preview-title {
+            color: #1a0dab;
+            font-size: 1.25rem;
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 0.2rem;
+        }
+        .preview-description {
+            color: #4d5156;
+            font-size: 0.9rem;
+        }
+
+        /* --- Modal for Source Code --- */
+        .modal {
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: var(--card-bg-color);
+            margin: auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-btn:hover, .close-btn:focus {
+            color: var(--text-color);
+        }
+        #source-code-content {
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 1rem;
+            max-height: 60vh;
+            overflow-y: auto;
+            display: block;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* --- Responsiveness --- */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .container {
+                margin: 1rem auto;
+            }
+            #analyze-form {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <h2>Meta Tag Analyzer</h2>
+    <div class="container">
+        <header>
+            <h1>Meta Tag Analyzer</h1>
+            <p class="subtitle">Enter a URL to analyze its meta tags for SEO and social media readiness.</p>
+        </header>
 
-  <div class="container">
-    <label for="urlInput">Enter URL:</label>
-    <input type="text" id="urlInput" class="input-box" placeholder="Enter website URL" />
+        <main>
+            <form id="analyze-form">
+                <input type="url" id="url-input" placeholder="https://example.com" required>
+                <button type="submit" id="analyze-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <span>Analyze</span>
+                </button>
+            </form>
 
-    <button id="analyzeButton">Analyze Meta Tags</button>
+            <div id="loader" class="hidden">
+                <div class="spinner"></div>
+                <p>Analyzing URL...</p>
+            </div>
+            
+            <div id="error-message" class="hidden"></div>
 
-    <div id="resultContainer" class="result" style="display:none;">
-      <p><span>Title:</span> <span id="metaTitle">N/A</span></p>
-      <p><span>Description:</span> <span id="metaDescription">N/A</span></p>
-      <p><span>Keywords:</span> <span id="metaKeywords">N/A</span></p>
-      <p><span>Author:</span> <span id="metaAuthor">N/A</span></p>
-      <p><span>Charset:</span> <span id="metaCharset">N/A</span></p>
+            <div id="results-container" class="hidden">
+                <div class="results-header">
+                    <h2 id="analyzed-url-title">Analysis for: </h2>
+                    <button id="view-source-btn">View Meta Source</button>
+                </div>
+
+                <!-- SERP Preview -->
+                <div class="result-card serp-preview">
+                    <h3>SERP Preview</h3>
+                    <div class="preview-box">
+                        <p class="preview-url"></p>
+                        <h4 class="preview-title"></h4>
+                        <p class="preview-description"></p>
+                    </div>
+                </div>
+
+                <!-- Main Results -->
+                <div id="results-grid">
+                    <!-- Cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </main>
     </div>
 
-    <p class="note">This tool analyzes the meta tags of the provided URL and extracts key metadata.</p>
-  </div>
+    <!-- Source Code Modal -->
+    <div id="source-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">×</span>
+            <h2>Meta Tag Source Code</h2>
+            <pre><code id="source-code-content"></code></pre>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Element References ---
+            const form = document.getElementById('analyze-form');
+            const urlInput = document.getElementById('url-input');
+            const loader = document.getElementById('loader');
+            const errorMessage = document.getElementById('error-message');
+            const resultsContainer = document.getElementById('results-container');
+            const analyzedUrlTitle = document.getElementById('analyzed-url-title');
+            const resultsGrid = document.getElementById('results-grid');
+            const viewSourceBtn = document.getElementById('view-source-btn');
+            const modal = document.getElementById('source-modal');
+            const closeModalBtn = document.querySelector('.close-btn');
+            const sourceCodeContent = document.getElementById('source-code-content');
 
-  <footer>
-    <p>Designed by <a href="https://example.com" target="_blank">YourName</a></p>
-  </footer>
+            let fullHeadHtml = '';
 
-  <script>
-    const urlInput = document.getElementById('urlInput');
-    const analyzeButton = document.getElementById('analyzeButton');
-    const resultContainer = document.getElementById('resultContainer');
-    const metaTitle = document.getElementById('metaTitle');
-    const metaDescription = document.getElementById('metaDescription');
-    const metaKeywords = document.getElementById('metaKeywords');
-    const metaAuthor = document.getElementById('metaAuthor');
-    const metaCharset = document.getElementById('metaCharset');
+            // --- Event Listeners ---
+            form.addEventListener('submit', handleFormSubmit);
+            viewSourceBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+            closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
 
-    // Function to fetch meta tags from the provided URL
-    async function fetchMetaTags(url) {
-      try {
-        // Fetch the webpage HTML
-        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
-        const html = await response.text();
+            // --- Main Handler Function ---
+            async function handleFormSubmit(e) {
+                e.preventDefault();
+                const url = urlInput.value.trim();
 
-        // Create a temporary DOM element to parse the HTML content
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
+                if (!isValidUrl(url)) {
+                    showError('Please enter a valid URL (e.g., https://example.com)');
+                    return;
+                }
 
-        // Extract meta tag content
-        const title = doc.querySelector('title') ? doc.querySelector('title').innerText : 'N/A';
-        const description = doc.querySelector('meta[name="description"]') ? doc.querySelector('meta[name="description"]').getAttribute('content') : 'N/A';
-        const keywords = doc.querySelector('meta[name="keywords"]') ? doc.querySelector('meta[name="keywords"]').getAttribute('content') : 'N/A';
-        const author = doc.querySelector('meta[name="author"]') ? doc.querySelector('meta[name="author"]').getAttribute('content') : 'N/A';
-        const charset = doc.querySelector('meta[charset]') ? doc.querySelector('meta[charset]').getAttribute('charset') : 'N/A';
+                // Reset UI
+                showLoader(true);
+                showError(null);
+                resultsContainer.classList.add('hidden');
 
-        // Update the UI with the extracted values
-        metaTitle.textContent = title;
-        metaDescription.textContent = description;
-        metaKeywords.textContent = keywords;
-        metaAuthor.textContent = author;
-        metaCharset.textContent = charset;
+                try {
+                    // NOTE: Using a CORS proxy for client-side fetching. 
+                    // For production, a self-hosted proxy is recommended for reliability and security.
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+                    const response = await fetch(proxyUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch URL. Status: ${response.status}`);
+                    }
 
-        // Show the result container
-        resultContainer.style.display = 'block';
-      } catch (error) {
-        alert("Error: Unable to fetch meta tags. Please check the URL.");
-      }
-    }
+                    const html = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
 
-    // Event listener to trigger the analysis
-    analyzeButton.addEventListener('click', () => {
-      const url = urlInput.value.trim();
-      if (url) {
-        fetchMetaTags(url);
-      } else {
-        alert('Please enter a valid URL.');
-      }
-    });
-  </script>
+                    const metaData = extractMetaData(doc, url);
+                    displayResults(metaData, url);
+                    
+                } catch (error) {
+                    console.error('Analysis Error:', error);
+                    showError(`Could not analyze the URL. It might be down, blocking requests, or an invalid page. Error: ${error.message}`);
+                } finally {
+                    showLoader(false);
+                }
+            }
 
+            // --- Data Extraction ---
+            function extractMetaData(doc, url) {
+                const getTagContent = (selector) => doc.querySelector(selector)?.getAttribute('content')?.trim() || null;
+                const getTitle = () => doc.querySelector('title')?.innerText?.trim() || null;
+
+                fullHeadHtml = doc.querySelector('head')?.innerHTML || 'Could not find <head> element.';
+
+                return {
+                    title: analyzeTitle(getTitle()),
+                    description: analyzeDescription(getTagContent('meta[name="description"]')),
+                    keywords: { content: getTagContent('meta[name="keywords"]') },
+                    viewport: { content: getTagContent('meta[name="viewport"]') },
+                    robots: { content: getTagContent('meta[name="robots"]') },
+                    ogTitle: { content: getTagContent('meta[property="og:title"]') },
+                    ogDescription: { content: getTagContent('meta[property="og:description"]') },
+                    ogImage: { content: getTagContent('meta[property="og:image"]') },
+                    ogUrl: { content: getTagContent('meta[property="og:url"]') },
+                    twitterCard: { content: getTagContent('meta[name="twitter:card"]') },
+                    twitterTitle: { content: getTagContent('meta[name="twitter:title"]') },
+                    twitterDescription: { content: getTagContent('meta[name="twitter:description"]') },
+                    twitterImage: { content: getTagContent('meta[name="twitter:image"]') },
+                };
+            }
+            
+            // --- Data Analysis ---
+            function analyzeTitle(title) {
+                const data = { content: title, length: title?.length || 0 };
+                if (!title) {
+                    data.status = 'bad';
+                    data.suggestion = 'A title tag is crucial for SEO. It should be present on every page.';
+                } else if (data.length > 60) {
+                    data.status = 'bad';
+                    data.suggestion = 'Title is too long (over 60 characters). Search engines may truncate it.';
+                } else if (data.length < 30) {
+                    data.status = 'warning';
+                    data.suggestion = 'Title is short (under 30 characters). Consider making it more descriptive.';
+                } else {
+                    data.status = 'good';
+                    data.suggestion = 'Title length is within the recommended range (30-60 characters).';
+                }
+                return data;
+            }
+
+            function analyzeDescription(desc) {
+                const data = { content: desc, length: desc?.length || 0 };
+                if (!desc) {
+                    data.status = 'bad';
+                    data.suggestion = 'A meta description is missing. It heavily influences click-through rates from search results.';
+                } else if (data.length > 160) {
+                    data.status = 'warning';
+                    data.suggestion = 'Description is long (over 160 characters). It might be cut off in search results.';
+                } else if (data.length < 70) {
+                    data.status = 'warning';
+                    data.suggestion = 'Description is short (under 70 characters). You could add more compelling details.';
+                } else {
+                    data.status = 'good';
+                    data.suggestion = 'Description length is ideal (70-160 characters).';
+                }
+                return data;
+            }
+
+            // --- DOM Manipulation ---
+            function displayResults(data, url) {
+                resultsContainer.classList.remove('hidden');
+                analyzedUrlTitle.textContent = `Analysis for: ${url}`;
+                resultsGrid.innerHTML = ''; // Clear previous results
+
+                updateSerpPreview(url, data.title.content, data.description.content);
+                
+                // Define which cards to create
+                const cardDefinitions = [
+                    { key: 'title', name: 'Title Tag' },
+                    { key: 'description', name: 'Meta Description' },
+                    { key: 'keywords', name: 'Meta Keywords (Legacy)' },
+                    { key: 'viewport', name: 'Viewport Tag' },
+                    { key: 'robots', name: 'Robots Tag' },
+                    { key: 'ogTitle', name: 'Open Graph Title' },
+                    { key: 'ogDescription', name: 'Open Graph Description' },
+                    { key: 'ogImage', name: 'Open Graph Image' },
+                    { key: 'twitterCard', name: 'Twitter Card' },
+                ];
+                
+                cardDefinitions.forEach(def => {
+                    const card = createResultCard(def.name, data[def.key]);
+                    resultsGrid.appendChild(card);
+                });
+
+                sourceCodeContent.textContent = formatHtml(fullHeadHtml);
+            }
+            
+            function createResultCard(name, data) {
+                const card = document.createElement('div');
+                card.className = 'result-card';
+
+                let analysisHtml = '';
+                if (data.status) {
+                    analysisHtml = `
+                        <div class="card-analysis">
+                            <p><strong>Length:</strong> <span>${data.length} characters</span></p>
+                            <p class="status-${data.status}">
+                                <span class="status-indicator"></span>
+                                <strong>Status:</strong> <span>${data.status.charAt(0).toUpperCase() + data.status.slice(1)}</span>
+                            </p>
+                            <p><strong>Suggestion:</strong> <span>${data.suggestion}</span></p>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <h3>${name}</h3>
+                    <div class="card-content ${!data.content ? 'not-found' : ''}">
+                        ${data.content ? escapeHtml(data.content) : 'Not Found'}
+                    </div>
+                    ${analysisHtml}
+                `;
+                return card;
+            }
+
+            function updateSerpPreview(url, title, description) {
+                document.querySelector('.preview-url').textContent = url;
+                document.querySelector('.preview-title').textContent = title || 'Missing Title - This is How it Looks';
+                document.querySelector('.preview-description').textContent = description || 'No meta description was found. Search engines will create one from the page content, which may not be ideal.';
+            }
+
+            // --- UI State Helpers ---
+            function showLoader(isLoading) {
+                loader.classList.toggle('hidden', !isLoading);
+            }
+
+            function showError(message) {
+                if (message) {
+                    errorMessage.textContent = message;
+                    errorMessage.classList.remove('hidden');
+                } else {
+                    errorMessage.classList.add('hidden');
+                }
+            }
+
+            // --- Utility Functions ---
+            function isValidUrl(string) {
+                try {
+                    new URL(string);
+                    return true;
+                } catch (_) {
+                    return false;
+                }
+            }
+
+            function escapeHtml(unsafe) {
+                if (unsafe === null || typeof unsafe === 'undefined') return '';
+                return unsafe
+                    .replace(/&/g, "&")
+                    .replace(/</g, "<")
+                    .replace(/>/g, ">")
+                    .replace(/"/g, """)
+                    .replace(/'/g, "'");
+            }
+
+            function formatHtml(htmlString) {
+                // A simple formatter to add indentation for readability
+                let indent = 0;
+                const tab = '  '; // 2 spaces
+                return htmlString.replace(/<[^\/][^>]*>|<(\/)[^>]+>/g, (match, isClosing) => {
+                    let formatted = '';
+                    if (!isClosing && !match.endsWith('/>')) {
+                        formatted = '\n' + tab.repeat(indent) + match;
+                        indent++;
+                    } else if (isClosing) {
+                        indent--;
+                        indent = Math.max(0, indent); // prevent negative indent
+                        formatted = '\n' + tab.repeat(indent) + match;
+                    } else { // self-closing tag
+                        formatted = '\n' + tab.repeat(indent) + match;
+                    }
+                    return formatted;
+                }).trim();
+            }
+        });
+    </script>
 </body>
 </html>
-
-  
-  
