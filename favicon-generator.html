@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favicon Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the Inter font and other common fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Hide the temporary canvas used for generation */
+        #tempCanvas {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-2xl">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Favicon Generator</h1>
+
+        <div class="space-y-4 mb-8">
+            <div>
+                <label for="faviconText" class="block text-gray-700 text-sm font-medium mb-2">Favicon Text (1-2 characters):</label>
+                <input type="text" id="faviconText" maxlength="2" value="FG"
+                       class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out"
+                       placeholder="e.g., A, JD">
+            </div>
+
+            <div id="messageBox" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block sm:inline" id="messageText"></span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <label for="bgColor" class="block text-gray-700 text-sm font-medium mb-2">Background Color:</label>
+                    <input type="color" id="bgColor" value="#3b82f6"
+                           class="w-full h-12 p-1 border border-gray-300 rounded-md cursor-pointer">
+                </div>
+                <div class="flex-1">
+                    <label for="textColor" class="block text-gray-700 text-sm font-medium mb-2">Text Color:</label>
+                    <input type="color" id="textColor" value="#ffffff"
+                           class="w-full h-12 p-1 border border-gray-300 rounded-md cursor-pointer">
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <label for="fontFamily" class="block text-gray-700 text-sm font-medium mb-2">Font Family:</label>
+                    <select id="fontFamily"
+                            class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out">
+                        <option value="Inter, sans-serif">Inter</option>
+                        <option value="Roboto, sans-serif">Roboto</option>
+                        <option value="Open Sans, sans-serif">Open Sans</option>
+                        <option value="Lato, sans-serif">Lato</option>
+                        <option value="Arial, sans-serif">Arial</option>
+                        <option value="Verdana, sans-serif">Verdana</option>
+                        <option value="Georgia, serif">Georgia</option>
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label for="fontSize" class="block text-gray-700 text-sm font-medium mb-2">Font Size (px):</label>
+                    <input type="number" id="fontSize" value="0" min="0"
+                           class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out">
+                    <p class="text-xs text-gray-500 mt-1">Set to 0 for auto-sizing.</p>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-gray-700 text-sm font-medium mb-2">Background Shape:</label>
+                <div class="flex gap-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="bgShape" value="square" class="form-radio text-blue-600" checked>
+                        <span class="ml-2 text-gray-700">Square</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="bgShape" value="circle" class="form-radio text-blue-600">
+                        <span class="ml-2 text-gray-700">Circle</span>
+                    </label>
+                </div>
+            </div>
+
+            <button id="generateBtn"
+                    class="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out font-semibold shadow-md">
+                Generate Favicons
+            </button>
+        </div>
+
+        <canvas id="tempCanvas"></canvas> <!-- Hidden canvas for drawing -->
+
+        <div id="previewArea" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Favicon previews will be injected here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const faviconText = document.getElementById('faviconText');
+        const bgColor = document.getElementById('bgColor');
+        const textColor = document.getElementById('textColor');
+        const fontFamily = document.getElementById('fontFamily');
+        const fontSizeInput = document.getElementById('fontSize');
+        const bgShapeRadios = document.querySelectorAll('input[name="bgShape"]');
+        const generateBtn = document.getElementById('generateBtn');
+        const previewArea = document.getElementById('previewArea');
+        const tempCanvas = document.getElementById('tempCanvas'); // Hidden canvas
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+
+        // Define favicon sizes and their corresponding names
+        const faviconSizes = [
+            { size: 16, name: 'favicon-16x16.png' },
+            { size: 32, name: 'favicon-32x32.png' },
+            { size: 180, name: 'apple-touch-icon.png' },
+            { size: 192, name: 'android-chrome-192x192.png' },
+            { size: 512, name: 'android-chrome-512x512.png' }
+        ];
+
+        /**
+         * Displays a message in the message box.
+         * @param {string} message - The message to display.
+         * @param {string} type - 'error' or 'info'.
+         */
+        function showMessage(message, type = 'error') {
+            messageText.textContent = message;
+            messageBox.className = `bg-${type === 'error' ? 'red' : 'blue'}-100 border border-${type === 'error' ? 'red' : 'blue'}-400 text-${type === 'error' ? 'red' : 'blue'}-700 px-4 py-3 rounded relative`;
+            messageBox.classList.remove('hidden');
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 5000); // Hide after 5 seconds
+        }
+
+        /**
+         * Draws the favicon content onto a canvas.
+         * @param {HTMLCanvasElement} canvas - The canvas element to draw on.
+         * @param {string} text - The text to display.
+         * @param {string} backgroundColor - The background color.
+         * @param {string} textColor - The text color.
+         * @param {string} font - The font family string.
+         * @param {number} customFontSize - The custom font size, 0 for auto.
+         * @param {string} shape - The background shape ('square' or 'circle').
+         */
+        function drawFavicon(canvas, text, backgroundColor, textColor, font, customFontSize, shape) {
+            const ctx = canvas.getContext('2d');
+            const size = canvas.width; // Canvas is square
+
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+
+            // Draw background shape
+            ctx.fillStyle = backgroundColor;
+            if (shape === 'circle') {
+                ctx.beginPath();
+                ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.fill();
+            } else { // 'square'
+                ctx.fillRect(0, 0, size, size);
+            }
+
+            // Set text properties
+            ctx.fillStyle = textColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            let finalFontSize;
+            if (customFontSize > 0) {
+                finalFontSize = customFontSize;
+            } else {
+                // Calculate font size dynamically based on favicon size and text length
+                if (text.length === 1) {
+                    finalFontSize = size * 0.6; // Larger for single character
+                } else {
+                    finalFontSize = size * 0.45; // Smaller for two characters
+                }
+            }
+            ctx.font = `${finalFontSize}px ${font}`;
+
+            // Draw text in the center
+            ctx.fillText(text.toUpperCase(), size / 2, size / 2 + (finalFontSize * 0.05)); // Slight vertical adjustment
+        }
+
+        /**
+         * Generates and displays favicons, and creates download links.
+         */
+        function generateFavicons() {
+            const text = faviconText.value.trim();
+            const bg = bgColor.value;
+            const txt = textColor.value;
+            const selectedFont = fontFamily.value;
+            const customFontSize = parseInt(fontSizeInput.value, 10);
+            const selectedShape = document.querySelector('input[name="bgShape"]:checked').value;
+
+            if (!text) {
+                showMessage('Please enter text for your favicon (1-2 characters).');
+                return;
+            }
+
+            // Clear previous previews
+            previewArea.innerHTML = '';
+
+            faviconSizes.forEach(({ size, name }) => {
+                // Set temporary canvas dimensions for drawing
+                tempCanvas.width = size;
+                tempCanvas.height = size;
+
+                // Draw the favicon content onto the temporary canvas
+                drawFavicon(tempCanvas, text, bg, txt, selectedFont, customFontSize, selectedShape);
+
+                // Get data URL of the generated image
+                const dataUrl = tempCanvas.toDataURL('image/png');
+
+                // Create preview and download elements
+                const faviconCard = document.createElement('div');
+                faviconCard.className = 'bg-gray-50 p-4 rounded-md shadow-sm flex flex-col items-center justify-between';
+                faviconCard.innerHTML = `
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">${size}x${size}px</h3>
+                    <img src="${dataUrl}" alt="Favicon Preview ${size}x${size}"
+                         class="border border-gray-300 rounded-md mb-4"
+                         style="width: ${size > 64 ? 64 : size}px; height: ${size > 64 ? 64 : size}px;">
+                    <a href="${dataUrl}" download="${name}"
+                       class="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 transition duration-200 ease-in-out text-sm font-medium">
+                        Download ${name}
+                    </a>
+                `;
+                previewArea.appendChild(faviconCard);
+            });
+        }
+
+        // Event Listeners
+        generateBtn.addEventListener('click', generateFavicons);
+        // Also generate on input change for a more dynamic experience
+        faviconText.addEventListener('input', generateFavicons);
+        bgColor.addEventListener('input', generateFavicons);
+        textColor.addEventListener('input', generateFavicons);
+        fontFamily.addEventListener('change', generateFavicons);
+        fontSizeInput.addEventListener('input', generateFavicons);
+        bgShapeRadios.forEach(radio => {
+            radio.addEventListener('change', generateFavicons);
+        });
+
+        // Initial generation on page load
+        window.onload = generateFavicons;
+    </script>
+</body>
+</html>
