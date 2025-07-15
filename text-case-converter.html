@@ -1,86 +1,205 @@
-  
-  
-  <div style="text-align:center;">
-  <h2>Text Case Converter</h2>
-  <input type="text" id="inputArea" style="width:90%;max-width:500px;height:120px;padding:10px;font-size:16px;border-radius:8px;border:1px solid #ccc;" placeholder="Enter text here..."><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Case Converter</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for consistency */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f8ff; /* Light blue background */
+        }
+        /* Custom scrollbar for textareas */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #e0f2fe; /* Light blue track */
+            border-radius: 10px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background-color: #3b82f6; /* Bright blue thumb */
+            border-radius: 10px;
+            border: 2px solid #e0f2fe;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl max-w-3xl w-full border border-blue-200">
+        <h1 class="text-3xl md:text-4xl font-bold text-center text-blue-700 mb-6">Text Case Converter</h1>
 
-  <button onclick="toUpper()" style="margin:5px;padding:10px 15px;background:#007bff;color:#fff;border:none;border-radius:8px;">UPPERCASE</button>
-  <button onclick="toLower()" style="margin:5px;padding:10px 15px;background:#007bff;color:#fff;border:none;border-radius:8px;">lowercase</button>
-  <button onclick="toSentence()" style="margin:5px;padding:10px 15px;background:#007bff;color:#fff;border:none;border-radius:8px;">Sentence case</button>
-  <button onclick="toCapital()" style="margin:5px;padding:10px 15px;background:#007bff;color:#fff;border:none;border-radius:8px;">Capitalized Case</button>
-  <button onclick="clearText()" style="margin:5px;padding:10px 15px;background:#007bff;color:#fff;border:none;border-radius:8px;">Clear</button>
-</div>
+        <!-- Input Area -->
+        <div class="mb-6">
+            <label for="inputText" class="block text-blue-700 text-lg font-semibold mb-2">Enter Your Text:</label>
+            <textarea id="inputText"
+                      class="w-full p-4 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out text-gray-800 bg-blue-50 resize-y min-h-[150px] shadow-sm"
+                      placeholder="Type or paste your text here..."></textarea>
+        </div>
 
-<script type="text/javascript">
-//<![CDATA[
-function toUpper() {
-  var t = document.getElementById("inputArea");
-  t.value = t.value.toUpperCase();
-}
+        <!-- Conversion Buttons -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
+            <button id="uppercaseBtn" class="conversion-btn bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105">UPPERCASE</button>
+            <button id="lowercaseBtn" class="conversion-btn bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105">lowercase</button>
+            <button id="titlecaseBtn" class="conversion-btn bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105">Title Case</button>
+            <button id="sentencecaseBtn" class="conversion-btn bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105">Sentence case</button>
+            <button id="togglecaseBtn" class="conversion-btn bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105">tOGGLE cASE</button>
+            <button id="clearBtn" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105">Clear</button>
+        </div>
 
-function toLower() {
-  var t = document.getElementById("inputArea");
-  t.value = t.value.toLowerCase();
-}
+        <!-- Output Area -->
+        <div class="mb-6">
+            <label for="outputText" class="block text-blue-700 text-lg font-semibold mb-2">Converted Text:</label>
+            <textarea id="outputText"
+                      class="w-full p-4 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out text-gray-800 bg-blue-50 resize-y min-h-[150px] shadow-sm"
+                      placeholder="Your converted text will appear here..." readonly></textarea>
+        </div>
 
-function toSentence() {
-  var t = document.getElementById("inputArea");
-  let txt = t.value.toLowerCase();
-  t.value = txt.charAt(0).toUpperCase() + txt.slice(1);
-}
+        <!-- Copy Button and Message -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <button id="copyBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105 w-full sm:w-auto">
+                Copy Output
+            </button>
+            <div id="copyMessage" class="text-green-700 font-medium opacity-0 transition-opacity duration-300 ease-in-out">
+                Text copied!
+            </div>
+        </div>
+    </div>
 
-function toCapital() {
-  var t = document.getElementById("inputArea");
-  let words = t.value.toLowerCase().split(" ");
-  for (let i = 0; i < words.length; i++) {
-    if (words[i]) {
-      words[i] = words[i][0].toUpperCase() + words[i].slice(1);
-    }
-  }
-  t.value = words.join(" ");
-}
+    <script>
+        // Get references to DOM elements
+        const inputTextarea = document.getElementById('inputText');
+        const outputTextarea = document.getElementById('outputText');
+        const uppercaseBtn = document.getElementById('uppercaseBtn');
+        const lowercaseBtn = document.getElementById('lowercaseBtn');
+        const titlecaseBtn = document.getElementById('titlecaseBtn');
+        const sentencecaseBtn = document.getElementById('sentencecaseBtn');
+        const togglecaseBtn = document.getElementById('togglecaseBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyMessage = document.getElementById('copyMessage');
 
-function clearText() {
-  var t = document.getElementById("inputArea");
-  t.value = "";
-}
-//]]>
-</script>
+        /**
+         * Converts the input text to uppercase and displays it in the output area.
+         */
+        function convertToUppercase() {
+            outputTextarea.value = inputTextarea.value.toUpperCase();
+        }
 
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f0f8ff;
-    padding: 20px;
-    text-align: center;
-  }
+        /**
+         * Converts the input text to lowercase and displays it in the output area.
+         */
+        function convertToLowercase() {
+            outputTextarea.value = inputTextarea.value.toLowerCase();
+        }
 
-  input[type="text"] {
-    width: 90%;
-    max-width: 500px;
-    height: 120px;
-    padding: 10px;
-    font-size: 16px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-  }
+        /**
+         * Converts the input text to title case (first letter of each word capitalized)
+         * and displays it in the output area.
+         */
+        function convertToTitleCase() {
+            const text = inputTextarea.value;
+            if (!text) {
+                outputTextarea.value = '';
+                return;
+            }
+            outputTextarea.value = text.toLowerCase().split(' ').map(word => {
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }).join(' ');
+        }
 
-  button {
-    margin: 5px;
-    padding: 10px 15px;
-    font-size: 14px;
-    border: none;
-    background: #007bff;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-  }
+        /**
+         * Converts the input text to sentence case (first letter of the first sentence capitalized,
+         * and the first letter of subsequent sentences capitalized, rest lowercase).
+         * This handles multiple sentences.
+         */
+        function convertToSentenceCase() {
+            const text = inputTextarea.value;
+            if (!text) {
+                outputTextarea.value = '';
+                return;
+            }
+            // Convert to lowercase first
+            let result = text.toLowerCase();
+            // Capitalize the first letter of the entire text
+            result = result.charAt(0).toUpperCase() + result.slice(1);
 
-  button:hover {
-    background: #0056b3;
-  }
-</style>
+            // Regular expression to find the start of a new sentence (after a period,
+            // exclamation mark, or question mark, followed by space and a letter)
+            result = result.replace(/([.!?]\s*)([a-z])/g, (match, separator, char) => {
+                return separator + char.toUpperCase();
+            });
 
-  
-  
+            outputTextarea.value = result;
+        }
+
+        /**
+         * Converts the input text to toggle case (uppercase becomes lowercase, lowercase becomes uppercase)
+         * and displays it in the output area.
+         */
+        function convertToToggleCase() {
+            const text = inputTextarea.value;
+            if (!text) {
+                outputTextarea.value = '';
+                return;
+            }
+            outputTextarea.value = text.split('').map(char => {
+                if (char === char.toUpperCase() && char !== char.toLowerCase()) { // Check if it's an uppercase letter
+                    return char.toLowerCase();
+                } else if (char === char.toLowerCase() && char !== char.toUpperCase()) { // Check if it's a lowercase letter
+                    return char.toUpperCase();
+                }
+                return char; // Return non-alphabetic characters as is
+            }).join('');
+        }
+
+        /**
+         * Clears both the input and output text areas.
+         */
+        function clearAll() {
+            inputTextarea.value = '';
+            outputTextarea.value = '';
+        }
+
+        /**
+         * Copies the text from the output area to the clipboard.
+         * Shows a temporary message indicating success.
+         */
+        function copyOutput() {
+            outputTextarea.select(); // Select the text in the output area
+            outputTextarea.setSelectionRange(0, 99999); // For mobile devices
+            try {
+                // Use document.execCommand('copy') as navigator.clipboard.writeText() might not work in iframes
+                document.execCommand('copy');
+                copyMessage.classList.remove('opacity-0');
+                copyMessage.classList.add('opacity-100');
+                setTimeout(() => {
+                    copyMessage.classList.remove('opacity-100');
+                    copyMessage.classList.add('opacity-0');
+                }, 2000); // Hide message after 2 seconds
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                // Fallback for browsers where execCommand is not supported or fails
+                alert('Could not copy text. Please copy manually.'); // Using alert as a fallback, though generally avoided.
+            }
+        }
+
+        // Add event listeners to buttons
+        uppercaseBtn.addEventListener('click', convertToUppercase);
+        lowercaseBtn.addEventListener('click', convertToLowercase);
+        titlecaseBtn.addEventListener('click', convertToTitleCase);
+        sentencecaseBtn.addEventListener('click', convertToSentenceCase);
+        togglecaseBtn.addEventListener('click', convertToToggleCase);
+        clearBtn.addEventListener('click', clearAll);
+        copyBtn.addEventListener('click', copyOutput);
+
+        // Optional: Perform a conversion on input change for immediate feedback (e.g., uppercase)
+        // If you want instant updates as the user types, you'd attach a listener here
+        // For this tool, conversions are triggered by button clicks as per the request.
+        // inputTextarea.addEventListener('input', convertToUppercase); // Example: auto-convert to uppercase as you type
+    </script>
+</body>
+</html>
