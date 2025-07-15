@@ -1,126 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="faveicon .png" type="image/x-icon">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Website Screenshot Generator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      padding: 30px;
-      text-align: center;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Screenshot Generator</title>
+    <!-- Google Fonts: Orbitron for headings, Inter for body -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Tailwind Configuration */
+        :root {
+            --main-bg: #0d0f14;
+            --navbar-bg: #1c222d;
+            --sidebar-bg: #12151a;
+            --text-light: #ffffff;
+            --text-dark: #e0e0e0;
+            --accent-cyan: #42f8f5;
+            --glow-shadow: rgba(66, 248, 245, 0.6);
+        }
 
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--main-bg);
+            color: var(--text-light);
+            transition: all 0.3s ease-in-out;
+        }
 
-    h1 {
-      font-size: 24px;
-      color: #333;
-    }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif;
+        }
 
-    input[type="text"] {
-      width: 80%;
-      padding: 10px;
-      font-size: 16px;
-      margin: 10px 0;
-    }
+        /* Custom glow effect for text */
+        .text-glow {
+            text-shadow: 0 0 5px var(--accent-cyan), 0 0 10px var(--accent-cyan), 0 0 15px var(--glow-shadow);
+        }
 
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin: 10px;
-      border-radius: 5px;
-    }
+        /* Custom glow effect for elements */
+        .glow-shadow-md {
+            box-shadow: 0 0 8px var(--glow-shadow);
+        }
+        .glow-shadow-lg {
+            box-shadow: 0 0 15px var(--glow-shadow);
+        }
+        .glow-border {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 5px var(--glow-shadow);
+        }
+        .glow-on-hover:hover {
+            box-shadow: 0 0 15px var(--glow-shadow), 0 0 30px var(--glow-shadow);
+            transform: translateY(-2px);
+        }
 
-    button:hover {
-      background-color: #0056b3;
-    }
+        /* Navbar link underline glow */
+        .nav-link-glow::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: var(--accent-cyan);
+            box-shadow: 0 0 5px var(--glow-shadow);
+            transition: width 0.3s ease-in-out;
+            margin-top: 2px;
+        }
+        .nav-link-glow:hover::after {
+            width: 100%;
+        }
 
-    #screenshot {
-      margin-top: 20px;
-      max-width: 100%;
-      display: none;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+        /* Hamburger menu animation */
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background-color: var(--text-light);
+            display: block;
+            margin: 4px auto;
+            transition: all 0.3s ease-in-out;
+        }
+        .hamburger.open .line-top {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.open .line-middle {
+            opacity: 0;
+        }
+        .hamburger.open .line-bottom {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
 
-    #downloadBtn {
-      display: none;
-    }
-
-    .loader {
-      display: none;
-      margin-top: 20px;
-    }
-  </style>
+        /* Custom scrollbar for a futuristic look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--main-bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-cyan);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--glow-shadow);
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <h1>Website Screenshot Generator</h1>
-    <input type="text" id="urlInput" placeholder="Enter website URL (e.g. https://example.com)" />
-    <br />
-    <button onclick="generateScreenshot()">Generate Screenshot</button>
-    <button id="downloadBtn" onclick="downloadImage()">Download Screenshot</button>
-    <div class="loader" id="loader">Loading screenshot...</div>
-    <img id="screenshot" />
-  </div>
+<body class="min-h-screen flex flex-col">
 
-  <script>
-    function generateScreenshot() {
-      const url = document.getElementById("urlInput").value.trim();
-      const screenshot = document.getElementById("screenshot");
-      const downloadBtn = document.getElementById("downloadBtn");
-      const loader = document.getElementById("loader");
+    <!-- Navbar -->
+    <nav class="bg-gray-800 p-4 shadow-lg sticky top-0 z-50" style="background-color: var(--navbar-bg);">
+        <div class="container mx-auto flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3">
+                <!-- Futuristic Circular Logo with Brain/Lightning/Glow Icon (SVG) -->
+                <svg class="w-8 h-8 text-cyan-400" fill="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 0 8px var(--glow-shadow));">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                    <path d="M12 5.5c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                    <path d="M13 18h-2v-4h2v4z"/>
+                    <path d="M12 4.5c-3.04 0-5.5 2.46-5.5 5.5s2.46 5.5 5.5 5.5 5.5-2.46 5.5-5.5-2.46-5.5-5.5-5.5zM12 14c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+                </svg>
+                <span class="text-xl font-bold text-white text-glow">Website Screenshot Generator</span>
+            </div>
 
-      if (!url) {
-        alert("Please enter a valid URL.");
-        return;
-      }
+            <!-- Navigation Links (Desktop) -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-300 hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium nav-link-glow transition-all duration-300 ease-in-out" style="color: var(--text-dark);">Home</a>
+                <a href="#" class="text-gray-300 hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium nav-link-glow transition-all duration-300 ease-in-out" style="color: var(--text-dark);">Tools</a>
+                <a href="#" class="text-gray-300 hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium nav-link-glow transition-all duration-300 ease-in-out" style="color: var(--text-dark);">About Us</a>
+                <a href="about-us.html" class="Welcome to Website 2031 – your all-in-one online tools hub. Our mission is to provide fast, reliable, and free tools to help simplify your digital tasks. From screenshot generators to file converters and more, we’re here to make your online experience smoother and more efficient.
+" style="color: var(--text-dark);">Contact</a>
+            </div>
 
-      // Clear previous state
-      screenshot.style.display = "none";
-      downloadBtn.style.display = "none";
-      loader.style.display = "block";
+            <!-- Hamburger Menu (Mobile) -->
+            <div class="md:hidden">
+                <button id="hamburger" class="hamburger p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                    <span class="hamburger-line line-top"></span>
+                    <span class="hamburger-line line-middle"></span>
+                    <span class="hamburger-line line-bottom"></span>
+                </button>
+            </div>
+        </div>
 
-      const access_key = "d80bfef17c5c47178855902d92bbd143"; // Replace with your actual access key
-      const encodedUrl = encodeURIComponent(url);
-      const apiUrl = `https://api.apiflash.com/v1/urltoimage?access_key=${access_key}&url=${encodedUrl}`;
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden mt-4">
+            <a href="#" class="block text-gray-300 hover:text-cyan-400 px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out" style="color: var(--text-dark);">Home</a>
+            <a href="#" class="block text-gray-300 hover:text-cyan-400 px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out" style="color: var(--text-dark);">Tools</a>
+            <a href="#" class="block text-gray-300 hover:text-cyan-400 px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out" style="color: var(--text-dark);">About</a>
+            <a href="#" class="block text-gray-300 hover:text-cyan-400 px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out" style="color: var(--text-dark);">Contact</a>
+        </div>
+    </nav>
 
-      screenshot.src = apiUrl;
-      screenshot.onload = () => {
-        loader.style.display = "none";
-        screenshot.style.display = "block";
-        downloadBtn.style.display = "inline-block";
-      };
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto p-6 flex flex-col items-center justify-center">
+        <div class="w-full max-w-2xl bg-gray-900 p-8 rounded-lg shadow-lg glow-shadow-md transition-all duration-300 ease-in-out" style="background-color: var(--sidebar-bg);">
+            <h2 class="text-3xl font-bold mb-6 text-center text-cyan-400 text-glow">Website Screenshot Generator</h2>
 
-      screenshot.onerror = () => {
-        loader.style.display = "none";
-        alert("Failed to load screenshot. Please check the URL or your API key.");
-      };
-    }
+            <div class="mb-6">
+                <label for="urlInput" class="block text-gray-300 text-sm font-bold mb-2">Website URL:</label>
+                <input type="url" id="urlInput" placeholder="e.g., https://www.example.com"
+                       class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-300 ease-in-out"
+                       style="background-color: var(--main-bg); color: var(--text-light); border-color: var(--accent-cyan); border-width: 1px;">
+            </div>
 
-    function downloadImage() {
-      const img = document.getElementById("screenshot");
-      const link = document.createElement("a");
-      link.href = img.src;
-      link.download = "screenshot.png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  </script>
+            <button id="generateBtn"
+                    class="w-full bg-blue-600 hover:bg-cyan-500 text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out border border-cyan-400 glow-on-hover"
+                    style="background-color: var(--sidebar-bg); border-color: var(--accent-cyan);">
+                Generate Screenshot
+            </button>
+
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="hidden text-center mt-6">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto"></div>
+                <p class="text-cyan-400 mt-2">Generating screenshot...</p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden bg-red-800 text-white p-3 rounded mt-6 text-center">
+                An error occurred. Please try again.
+            </div>
+
+            <!-- Screenshot Display Area -->
+            <div id="screenshotDisplay" class="mt-8 hidden relative rounded-lg overflow-hidden glow-shadow-md glow-on-hover transition-all duration-300 ease-in-out" style="border: 1px solid var(--accent-cyan);">
+                <img id="screenshotImage" src="" alt="Website Screenshot" class="w-full h-auto rounded-lg">
+                <div class="absolute inset-0 bg-gradient-to-t from-transparent to-transparent hover:from-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                    <button id="downloadBtn"
+                            class="hidden bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out border border-cyan-400 glow-on-hover"
+                            style="background-color: var(--accent-cyan); border-color: var(--text-light);">
+                        <i class="fas fa-download mr-2"></i> Download Screenshot
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-6 text-center text-gray-400 border-t border-cyan-400 glow-shadow-md" style="background-color: var(--sidebar-bg); border-top: 1px solid var(--accent-cyan);">
+        <div class="container mx-auto">
+            <p class="mb-4">&copy; 2025 Mbera. All Rights Reserved.</p>
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="#" class="hover:text-cyan-400 transition-colors duration-300 nav-link-glow" style="color: var(--text-dark);">Privacy Policy</a>
+                <span class="text-gray-600">|</span>
+                <a href="#" class="hover:text-cyan-400 transition-colors duration-300 nav-link-glow" style="color: var(--text-dark);">Terms</a>
+                <span class="text-gray-600">|</span>
+                <a href="#" class="hover:text-"#" style="color: var(--text-dark);">Contact</a>
+            </div>
+            <div class="flex justify-center space-x-6 text-2xl">
+                <a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors duration-300 glow-on-hover" style="color: var(--text-dark);"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors duration-300 glow-on-hover" style="color: var(--text-dark);"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors duration-300 glow-on-hover" style="color: var(--text-dark);"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors duration-300 glow-on-hover" style="color: var(--text-dark);"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const urlInput = document.getElementById('urlInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        const screenshotDisplay = document.getElementById('screenshotDisplay');
+        const screenshotImage = document.getElementById('screenshotImage');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        // IMPORTANT: Replace 'YOUR_API_ACCESS_KEY' with your actual APIFlash access key.
+        // You can get one from https://apiflash.com/
+        const API_ACCESS_KEY = 'd80bfef17c5c47178855902d92bbd143'; 
+        const API_ENDPOINT = 'https://api.apiflash.com/v1/urltoimage';
+
+        // Function to show a message (instead of alert)
+        function showMessage(element, message, isError = false) {
+            element.textContent = message;
+            element.classList.remove('hidden');
+            if (isError) {
+                element.classList.remove('bg-green-600');
+                element.classList.add('bg-red-800');
+            } else {
+                element.classList.remove('bg-red-800');
+                element.classList.add('bg-green-600');
+            }
+            setTimeout(() => {
+                element.classList.add('hidden');
+            }, 5000); // Hide after 5 seconds
+        }
+
+        // Event Listener for Generate Button
+        generateBtn.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+
+            // Basic URL validation
+            if (!url) {
+                showMessage(errorMessage, 'Please enter a website URL.', true);
+                return;
+            }
+
+            // Ensure the URL has a protocol
+            let formattedUrl = url;
+            if (!/^https?:\/\//i.test(url)) {
+                formattedUrl = `https://${url}`;
+            }
+
+            // Hide previous results/messages
+            errorMessage.classList.add('hidden');
+            screenshotDisplay.classList.add('hidden');
+            downloadBtn.classList.add('hidden');
+            screenshotImage.src = ''; // Clear previous image
+
+            // Show loading indicator
+            loadingIndicator.classList.remove('hidden');
+
+            try {
+                // Construct the API URL with parameters
+                const apiUrl = `${API_ENDPOINT}?access_key=${API_ACCESS_KEY}&url=${encodeURIComponent(formattedUrl)}&format=jpeg&quality=90&full_page=true&fresh=true`;
+
+                // Fetch the screenshot
+                const response = await fetch(apiUrl);
+
+                if (!response.ok) {
+                    // If response is not OK (e.g., 4xx, 5xx status)
+                    const errorText = await response.text();
+                    throw new Error(`API Error: ${response.status} - ${errorText || response.statusText}`);
+                }
+
+                // Get the image blob
+                const imageBlob = await response.blob();
+                const imageUrl = URL.createObjectURL(imageBlob);
+
+                // Display the screenshot
+                screenshotImage.src = imageUrl;
+                screenshotDisplay.classList.remove('hidden');
+                downloadBtn.classList.remove('hidden'); // Show download button
+
+                // Set download button href
+                downloadBtn.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = imageUrl;
+                    a.download = `screenshot_${new Date().getTime()}.jpeg`; // Dynamic filename
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(imageUrl); // Clean up the object URL
+                };
+
+            } catch (error) {
+                console.error('Error generating screenshot:', error);
+                showMessage(errorMessage, `Failed to generate screenshot: ${error.message || 'Check your URL or API key.'}`, true);
+            } finally {
+                // Hide loading indicator
+                loadingIndicator.classList.add('hidden');
+            }
+        });
+
+        // Hamburger menu toggle for mobile
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('open');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Initial check for API key
+        if (API_ACCESS_KEY === 'YOUR_API_ACCESS_KEY' || !API_ACCESS_KEY) {
+            showMessage(errorMessage, 'Please replace "YOUR_API_ACCESS_KEY" in the JavaScript code with your actual APIFlash access key.', true);
+        }
+    </script>
 </body>
 </html>
