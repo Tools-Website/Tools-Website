@@ -1,101 +1,152 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="faveicon .png" type="image/x-icon">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PDF to Word Converter</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f8ff;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: 50px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 255, 0.1);
-      text-align: center;
-    }
-
-    h1 {
-      color: #007bff;
-      margin-bottom: 20px;
-    }
-
-    input[type="file"] {
-      display: block;
-      margin: 20px auto;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        margin: 20px;
-        padding: 15px;
-      }
-      button {
-        width: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Word Converter</title>
+    <style>
+        body {
+            background-color: white;
+            color: #333;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #007BFF;
+            font-size: 24px;
+        }
+        p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        #downloadLink {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        #downloadLink:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            button, #downloadLink {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://unpkg.com/docx@7.1.0/build/index.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>PDF to Word Converter</h1>
-    <input type="file" id="pdfUpload" accept="application/pdf" />
-    <button onclick="convertToWord()">Convert to Word</button>
-    <p id="status"></p>
-  </div>
+    <div class="container">
+        <h1>PDF to Word Converter</h1>
+        <p>Upload a PDF file and convert it to an editable Word document. Note: Formatting may not be preserved perfectly.</p>
+        <input type="file" id="pdfFile" accept="application/pdf">
+        <br>
+        <button id="convertButton">Convert</button>
+        <div id="status"></div>
+        <a id="downloadLink" style="display:none;">Download Word File</a>
+    </div>
+    <script>
+        // Set the pdf.js worker source
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 
-  <script>
-    async function convertToWord() {
-      const fileInput = document.getElementById('pdfUpload');
-      const status = document.getElementById('status');
-      if (!fileInput.files.length) {
-        status.textContent = 'Please select a PDF file.';
-        return;
-      }
+        // DOM elements
+        const fileInput = document.getElementById('pdfFile');
+        const convertButton = document.getElementById('convertButton');
+        const statusDiv = document.getElementById('status');
+        const downloadLink = document.getElementById('downloadLink');
+        let selectedFile = null;
 
-      const file = fileInput.files[0];
+        // Store the selected file
+        fileInput.addEventListener('change', (e) => {
+            selectedFile = e.target.files[0];
+        });
 
-      // Placeholder: Actual conversion requires backend or external API
-      status.textContent = 'Uploading and converting file...';
+        // Handle the conversion process
+        convertButton.addEventListener('click', async () => {
+            if (!selectedFile || selectedFile.type !== 'application/pdf') {
+                statusDiv.textContent = 'Please select a PDF file.';
+                return;
+            }
 
-      // Simulate delay
-      setTimeout(() => {
-        status.textContent = 'Conversion successful! Download will start shortly.';
+            statusDiv.textContent = 'Converting...';
+            convertButton.disabled = true;
 
-        // Simulate download
-        const blob = new Blob(["This is a mock Word document content."], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'converted.docx';
-        a.click();
-        URL.revokeObjectURL(url);
-      }, 2000);
-    }
-  </script>
+            try {
+                // Read the PDF file as an array buffer
+                const arrayBuffer = await selectedFile.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const numPages = pdf.numPages;
+                let fullText = '';
+
+                // Extract text from each page
+                for (let i = 1; i <= numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += pageText + '\n\n';
+                }
+
+                // Create a new Word document
+                const doc = new docx.Document({
+                    sections: [{
+                        properties: {},
+                        children: [new docx.Paragraph({ text: fullText })]
+                    }]
+                });
+
+                // Generate the .docx file as a Blob
+                const blob = await docx.Packer.toBlob(doc);
+                const url = URL.createObjectURL(blob);
+
+                // Update UI with download link
+                downloadLink.href = url;
+                downloadLink.download = 'converted.docx';
+                downloadLink.style.display = 'block';
+                statusDiv.textContent = 'Conversion complete.';
+            } catch (error) {
+                statusDiv.textContent = 'Error during conversion: ' + error.message;
+            } finally {
+                convertButton.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
-  
