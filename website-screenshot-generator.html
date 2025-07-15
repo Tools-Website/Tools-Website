@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Screenshot Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #333;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin: 10px;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #screenshot {
+      margin-top: 20px;
+      max-width: 100%;
+      display: none;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    #downloadBtn {
+      display: none;
+    }
+
+    .loader {
+      display: none;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Website Screenshot Generator</h1>
+    <input type="text" id="urlInput" placeholder="Enter website URL (e.g. https://example.com)" />
+    <br />
+    <button onclick="generateScreenshot()">Generate Screenshot</button>
+    <button id="downloadBtn" onclick="downloadImage()">Download Screenshot</button>
+    <div class="loader" id="loader">Loading screenshot...</div>
+    <img id="screenshot" />
+  </div>
+
+  <script>
+    function generateScreenshot() {
+      const url = document.getElementById("urlInput").value.trim();
+      const screenshot = document.getElementById("screenshot");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const loader = document.getElementById("loader");
+
+      if (!url) {
+        alert("Please enter a valid URL.");
+        return;
+      }
+
+      // Clear previous state
+      screenshot.style.display = "none";
+      downloadBtn.style.display = "none";
+      loader.style.display = "block";
+
+      const access_key = "YOUR_ACCESS_KEY"; // Replace with your actual access key
+      const encodedUrl = encodeURIComponent(url);
+      const apiUrl = `https://api.apiflash.com/v1/urltoimage?access_key=${access_key}&url=${encodedUrl}`;
+
+      screenshot.src = apiUrl;
+      screenshot.onload = () => {
+        loader.style.display = "none";
+        screenshot.style.display = "block";
+        downloadBtn.style.display = "inline-block";
+      };
+
+      screenshot.onerror = () => {
+        loader.style.display = "none";
+        alert("Failed to load screenshot. Please check the URL or your API key.");
+      };
+    }
+
+    function downloadImage() {
+      const img = document.getElementById("screenshot");
+      const link = document.createElement("a");
+      link.href = img.src;
+      link.download = "screenshot.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
