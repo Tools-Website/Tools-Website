@@ -1,235 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us | Our Company</title>
-    
-    <!-- ======================= CSS STYLES ======================= -->
-    <style>
-        /* --- Basic Reset & Global Styles --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            line-height: 1.6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* --- Main Content Wrapper --- */
-        .content-wrapper {
-            width: 100%;
-            max-width: 700px;
-            background-color: #fff;
-            padding: 30px 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        /* --- Header Styling --- */
-        .page-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .page-header h1 {
-            font-size: 2.2rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .page-header p {
-            font-size: 1.1rem;
-            color: #555;
-        }
-        
-        /* --- Form Styling --- */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #555;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        /* NEW: Style for invalid fields */
-        .form-group input.invalid,
-        .form-group textarea.invalid {
-            border-color: #e74c3c; /* Red border for errors */
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        /* --- Form Status Message Styling --- */
-        #form-status {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            font-weight: bold;
-            display: none; /* Hidden by default */
-        }
-
-        #form-status.error {
-            display: block; /* Make visible only for errors */
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-    </style>
-</head>
-<body>
-
-    <!-- ======================= HTML CONTENT ======================= -->
-    <div class="content-wrapper">
-    
-        <div class="page-header">
-            <h1>Contact Us</h1>
-            <p>Fill out the form and click send. Your email app will open to send the message.</p>
-        </div>
-        
-        <form id="contactForm" novalidate>
-            <div class="form-group">
-                <label for="name">Your Name</label>
-                <input type="text" id="name" name="name" placeholder="John Doe" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Your Email</label>
-                <input type="email" id="email" name="email" placeholder="you@example.com" required>
-            </div>
-            <div class="form-group">
-                <label for="subject">Subject</label>
-                <input type="text" id="subject" name="subject" placeholder="e.g., General Inquiry" required>
-            </div>
-            <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" rows="5" placeholder="Your message here..." required></textarea>
-            </div>
-            
-            <button type="submit">Prepare & Send Message</button>
-
-            <!-- Status message for form submission errors -->
-            <div id="form-status"></div>
-        </form>
-        
+<div class="my-contact-form">
+  <form
+    action="https://formsubmit.co/youremail@email.com"
+    method="POST"
+    id="contact-form"
+  >
+    <div>
+      <label class="my-contact-form-label" for="name">Name:</label>
+      <input class="my-contact-form-input" type="text" id="name" name="name" required />
     </div>
-
-    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const contactForm = document.getElementById('contactForm');
-            const formStatus = document.getElementById('form-status');
-            
-            // Get all the input fields that are required
-            const requiredFields = contactForm.querySelectorAll('[required]');
-
-            contactForm.addEventListener('submit', function (event) {
-                event.preventDefault();
-
-                // --- 1. Reset previous states ---
-                formStatus.textContent = '';
-                formStatus.className = '';
-                requiredFields.forEach(field => field.classList.remove('invalid'));
-                let allFieldsValid = true;
-
-                // --- 2. Validation ---
-                requiredFields.forEach(field => {
-                    if (field.value.trim() === '') {
-                        field.classList.add('invalid'); // Highlight the empty field
-                        allFieldsValid = false;
-                    }
-                });
-                
-                if (!allFieldsValid) {
-                    showStatusMessage('Please fill out all required fields.', 'error');
-                    return; // Stop if any required field is empty
-                }
-                
-                const userEmailField = document.getElementById('email');
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(userEmailField.value.trim())) {
-                    userEmailField.classList.add('invalid');
-                    showStatusMessage('Please enter a valid email address.', 'error');
-                    return; // Stop if email is invalid
-                }
-
-                // --- 3. If validation passes, create the mailto link ---
-                const name = document.getElementById('name').value.trim();
-                const userEmail = userEmailField.value.trim();
-                const subject = document.getElementById('subject').value.trim();
-                const message = document.getElementById('message').value.trim();
-                
-                const recipientEmail = 'toolswebsite06@gmail.com';
-                
-                const emailBody = `New message from website contact form:\n\n` +
-                                  `From: ${name}\n` +
-                                  `Email: ${userEmail}\n\n` +
-                                  `Message:\n${message}`;
-
-                const encodedSubject = encodeURIComponent(subject);
-                const encodedBody = encodeURIComponent(emailBody);
-                const mailtoLink = `mailto:${recipientEmail}?subject=${encodedSubject}&body=${encodedBody}`;
-
-                window.location.href = mailtoLink;
-
-                setTimeout(() => {
-                    contactForm.reset();
-                }, 1000);
-            });
-
-            // Helper function to display an error message
-            function showStatusMessage(message, type) {
-                formStatus.textContent = message;
-                formStatus.className = type; // This will set the class to 'error'
-            }
-        });
-    </script>
-</body>
-</html>
+    <div>
+      <label class="my-contact-form-label" for="email">Email:</label>
+      <input class="my-contact-form-input" type="email" id="email" name="email" required />
+    </div>
+    <div>
+      <label class="my-contact-form-label" for="message">Message:</label>
+      <textarea class="my-contact-form-input" id="message" name="message" required></textarea>
+    </div>
+    <input type="hidden" name="_captcha" value="false" />
+    <input type="hidden" name="_template" value="table" />
+    <input
+      type="hidden"
+      name="_next"
+      value="https://www.blogbrackets.com/p/thank-you.html"
+    />
+    <button class="my-contact-form-btn" type="submit">Send</button>
+  </form>
+</div>
+<style>
+    .my-contact-form{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+.my-contact-form form{
+  	width: 100%
+}
+.my-contact-form-label{
+    display: block;
+    font-weight: 600;
+    font-size: 16px;
+    color: #07074d;
+    margin: 12px 0;
+}
+.my-contact-form-input{
+    width: 100%;
+    padding: 12px 0px !important;
+    text-indent: 10px !important;
+    border-radius: 6px !important;
+    border: 1px solid #e0e0e0 !important;
+    background: white !important;
+    font-weight: 500 !important;
+    font-size: 16px !important;
+    color: #6b7280 !important;
+    outline: none !important;
+    resize: none !important;
+}
+.my-contact-form-input:focus{
+  border-color: #6a64f1 !important;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05) !important;
+}
+.my-contact-form-btn {
+    text-align: center;
+    font-size: 16px;
+    border-radius: 6px;
+    padding: 14px 32px;
+    border: none;
+    font-weight: 600;
+    background-color: #6a64f1;
+    color: white;
+    width: 100%;
+    cursor: pointer;
+  	margin-top: 12px;
+}
+.my-contact-form-btn:hover {
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+}
+</style>
