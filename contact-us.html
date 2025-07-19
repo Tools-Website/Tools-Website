@@ -75,6 +75,12 @@
             transition: border-color 0.3s, box-shadow 0.3s;
         }
 
+        /* NEW: Style for invalid fields */
+        .form-group input.invalid,
+        .form-group textarea.invalid {
+            border-color: #e74c3c; /* Red border for errors */
+        }
+
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
@@ -82,7 +88,7 @@
             box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
         }
 
-        button { /* General button style */
+        button {
             width: 100%;
             padding: 15px;
             background-color: #3498db;
@@ -110,7 +116,7 @@
             display: none; /* Hidden by default */
         }
 
-        .error {
+        #form-status.error {
             display: block; /* Make visible only for errors */
             background-color: #f8d7da;
             color: #721c24;
@@ -126,7 +132,7 @@
     
         <div class="page-header">
             <h1>Contact Us</h1>
-            <p>Fill out the form and click send. Your email client will open to send the message.</p>
+            <p>Fill out the form and click send. Your email app will open to send the message.</p>
         </div>
         
         <form id="contactForm" novalidate>
@@ -160,59 +166,59 @@
         document.addEventListener('DOMContentLoaded', function () {
             const contactForm = document.getElementById('contactForm');
             const formStatus = document.getElementById('form-status');
+            
+            // Get all the input fields that are required
+            const requiredFields = contactForm.querySelectorAll('[required]');
 
             contactForm.addEventListener('submit', function (event) {
                 event.preventDefault();
 
-                formStatus.innerHTML = '';
+                // --- 1. Reset previous states ---
+                formStatus.textContent = '';
                 formStatus.className = '';
-                formStatus.style.display = 'none';
+                requiredFields.forEach(field => field.classList.remove('invalid'));
+                let allFieldsValid = true;
 
+                // --- 2. Validation ---
+                requiredFields.forEach(field => {
+                    if (field.value.trim() === '') {
+                        field.classList.add('invalid'); // Highlight the empty field
+                        allFieldsValid = false;
+                    }
+                });
+                
+                if (!allFieldsValid) {
+                    showStatusMessage('Please fill out all required fields.', 'error');
+                    return; // Stop if any required field is empty
+                }
+                
+                const userEmailField = document.getElementById('email');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(userEmailField.value.trim())) {
+                    userEmailField.classList.add('invalid');
+                    showStatusMessage('Please enter a valid email address.', 'error');
+                    return; // Stop if email is invalid
+                }
+
+                // --- 3. If validation passes, create the mailto link ---
                 const name = document.getElementById('name').value.trim();
-                const userEmail = document.getElementById('email').value.trim();
+                const userEmail = userEmailField.value.trim();
                 const subject = document.getElementById('subject').value.trim();
                 const message = document.getElementById('message').value.trim();
                 
-                // --- Form Validation ---
-                if (name === '' || userEmail === '' || subject === '' || message === '') {
-                    showStatusMessage('Please fill out all fields.', 'error');
-                    return;
-                }
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(userEmail)) {
-                    showStatusMessage('Please enter a valid email address.', 'error');
-                    return;
-                }
-                
-                // --- On Success, create the mailto link ---
-                
-                // YOUR EMAIL ADDRESS GOES HERE
                 const recipientEmail = 'toolswebsite06@gmail.com';
                 
-                // Format the email body
-                const emailBody = `
-                    Hello,
+                const emailBody = `New message from website contact form:\n\n` +
+                                  `From: ${name}\n` +
+                                  `Email: ${userEmail}\n\n` +
+                                  `Message:\n${message}`;
 
-                    You have a new message from your website contact form.
-
-                    From: ${name}
-                    Email: ${userEmail}
-
-                    Message:
-                    ${message}
-                `;
-
-                // Encode the subject and body for the URL
                 const encodedSubject = encodeURIComponent(subject);
                 const encodedBody = encodeURIComponent(emailBody);
-
-                // Create the mailto link
                 const mailtoLink = `mailto:${recipientEmail}?subject=${encodedSubject}&body=${encodedBody}`;
 
-                // Open the user's default email client
                 window.location.href = mailtoLink;
 
-                // Optionally, reset the form after a short delay
                 setTimeout(() => {
                     contactForm.reset();
                 }, 1000);
@@ -221,8 +227,7 @@
             // Helper function to display an error message
             function showStatusMessage(message, type) {
                 formStatus.textContent = message;
-                formStatus.className = type;
-                formStatus.style.display = 'block';
+                formStatus.className = type; // This will set the class to 'error'
             }
         });
     </script>
