@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP Calculator</title>
+    <!-- Google Fonts - Orbitron for futuristic look -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for social icons in footer -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN for the donut chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom CSS for neon glow and slider styling */
+        body {
+            font-family: 'Orbitron', sans-serif; /* Apply Orbitron to body */
+            background-color: #0d0f14; /* Main Background Color */
+            color: #e0e0e0; /* Default text color */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure footer is at the bottom */
+        }
+
+        /* Main container glow effect */
+        .neon-glow-border {
+            border: 2px solid #42f8f5;
+            box-shadow: 0 0 15px rgba(66, 248, 245, 0.6),
+                        0 0 30px rgba(66, 248, 245, 0.4),
+                        0 0 45px rgba(66, 248, 245, 0.2);
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Input range slider styling */
+        input[type="range"] {
+            -webkit-appearance: none; /* Remove default styling */
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #1c222d; /* Navbar Background */
+            outline: none;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #42f8f5; /* Accent Cyan Glow Color */
+            border-radius: 50%;
+            cursor: grab;
+            box-shadow: 0 0 5px rgba(66, 248, 245, 0.8);
+            transition: all 0.3s ease-in-out;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #42f8f5;
+            border-radius: 50%;
+            cursor: grab;
+            box-shadow: 0 0 5px rgba(66, 248, 245, 0.8);
+            transition: all 0.3s ease-in-out;
+        }
+
+        input[type="range"]:hover::-webkit-slider-thumb {
+            box-shadow: 0 0 10px rgba(66, 248, 245, 1);
+        }
+
+        input[type="range"]:hover::-moz-range-thumb {
+            box-shadow: 0 0 10px rgba(66, 248, 245, 1);
+        }
+
+        /* Input number styling */
+        input[type="number"] {
+            background-color: #1c222d; /* Navbar Background */
+            color: #ffffff; /* Text Colors */
+            border: 1px solid #42f8f5; /* Accent Cyan Glow Color */
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+            text-align: center;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(66, 248, 245, 0.8);
+        }
+
+        /* Card hover effect */
+        .card-hover-glow:hover {
+            box-shadow: 0 0 15px rgba(66, 248, 245, 0.6),
+                        0 0 30px rgba(66, 248, 245, 0.4);
+            transform: translateY(-5px);
+        }
+
+        /* Footer styling */
+        .main-footer {
+            background-color: #1c222d; /* Navbar Background */
+            color: #e0e0e0; /* Text Colors */
+            padding: 2rem 1rem;
+            text-align: center;
+            margin-top: auto; /* Push footer to the bottom */
+            width: 100%;
+            border-top: 1px solid #42f8f5; /* Accent Cyan Glow Color */
+        }
+
+        .footer-socials a {
+            color: #e0e0e0;
+            margin: 0 10px;
+            font-size: 1.5rem;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .footer-socials a:hover {
+            color: #42f8f5; /* Accent Cyan Glow Color */
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+        }
+
+        .footer-links a {
+            color: #e0e0e0;
+            margin: 0 15px;
+            text-decoration: none;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .footer-links a:hover {
+            color: #42f8f5; /* Accent Cyan Glow Color */
+        }
+
+        .footer-copyright {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+
+        /* Logo styling */
+        .logo {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #42f8f5; /* Accent Cyan Glow Color */
+            text-shadow: 0 0 5px rgba(66, 248, 245, 0.8);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4 relative">
+
+    <!-- Tools Website Logo -->
+    <div class="logo">Tools Website</div>
+
+    <div class="sip-calculator-container bg-[#12151a] p-8 rounded-xl shadow-2xl neon-glow-border w-full max-w-2xl mx-auto my-8 transition-all duration-300 ease-in-out">
+        <h1 class="text-4xl font-bold text-[#42f8f5] text-center mb-2">SIP Calculator</h1>
+        <p class="text-lg text-gray-300 text-center mb-8">Project the future value of your mutual fund investments.</p>
+
+        <!-- Input Controls -->
+        <div class="space-y-6 mb-8">
+            <!-- Monthly Investment -->
+            <div class="input-group flex flex-col items-center bg-[#1c222d] p-4 rounded-lg shadow-md card-hover-glow transition-all duration-300 ease-in-out">
+                <label for="monthlyInvestment" class="text-white text-lg mb-2">Monthly Investment (₹)</label>
+                <div class="flex items-center w-full max-w-md">
+                    <input type="range" id="monthlyInvestmentSlider" min="500" max="100000" value="5000" step="500" class="flex-grow mr-4">
+                    <input type="number" id="monthlyInvestmentInput" min="500" max="100000" value="5000" step="500" class="w-28">
+                </div>
+            </div>
+
+            <!-- Expected Return Rate -->
+            <div class="input-group flex flex-col items-center bg-[#1c222d] p-4 rounded-lg shadow-md card-hover-glow transition-all duration-300 ease-in-out">
+                <label for="returnRate" class="text-white text-lg mb-2">Expected Return Rate (p.a. %)</label>
+                <div class="flex items-center w-full max-w-md">
+                    <input type="range" id="returnRateSlider" min="1" max="30" value="12" step="0.5" class="flex-grow mr-4">
+                    <input type="number" id="returnRateInput" min="1" max="30" value="12" step="0.5" class="w-28">
+                </div>
+            </div>
+
+            <!-- Time Period -->
+            <div class="input-group flex flex-col items-center bg-[#1c222d] p-4 rounded-lg shadow-md card-hover-glow transition-all duration-300 ease-in-out">
+                <label for="timePeriod" class="text-white text-lg mb-2">Time Period (Years)</label>
+                <div class="flex items-center w-full max-w-md">
+                    <input type="range" id="timePeriodSlider" min="1" max="50" value="10" step="1" class="flex-grow mr-4">
+                    <input type="number" id="timePeriodInput" min="1" max="50" value="10" step="1" class="w-28">
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section flex flex-col md:flex-row items-center justify-around bg-[#1c222d] p-6 rounded-xl shadow-lg card-hover-glow transition-all duration-300 ease-in-out">
+            <div class="chart-container w-full md:w-1/2 flex justify-center items-center mb-6 md:mb-0">
+                <canvas id="sipChart" class="max-w-xs"></canvas>
+            </div>
+            <div class="result-breakdown w-full md:w-1/2 text-center md:text-left space-y-4">
+                <h3 class="text-2xl font-bold text-white mb-4">Projection Details:</h3>
+                <p class="text-lg text-gray-300">Invested Amount: <span id="investedAmount" class="text-[#42f8f5] font-bold">₹0</span></p>
+                <p class="text-lg text-gray-300">Estimated Returns: <span id="estimatedReturns" class="text-[#42f8f5] font-bold">₹0</span></p>
+                <p class="text-2xl font-bold text-white mt-4">Total Value: <span id="totalValue" class="text-[#42f8f5] font-bold">₹0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-socials">
+            <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+        </div>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Cookie Policy</a>
+            <a href="#">Disclaimer</a>
+        </div>
+        <p class="footer-copyright">
+            &copy; 2025 Tools Website. All Rights Reserved.
+        </p>
+    </footer>
+
+    <script>
+        // Get references to input elements
+        const monthlyInvestmentSlider = document.getElementById('monthlyInvestmentSlider');
+        const monthlyInvestmentInput = document.getElementById('monthlyInvestmentInput');
+        const returnRateSlider = document.getElementById('returnRateSlider');
+        const returnRateInput = document.getElementById('returnRateInput');
+        const timePeriodSlider = document.getElementById('timePeriodSlider');
+        const timePeriodInput = document.getElementById('timePeriodInput');
+
+        // Get references to result display elements
+        const investedAmountSpan = document.getElementById('investedAmount');
+        const estimatedReturnsSpan = document.getElementById('estimatedReturns');
+        const totalValueSpan = document.getElementById('totalValue');
+
+        // Chart.js instance
+        let sipDonutChart;
+
+        // Function to format currency
+        const formatCurrency = (value) => {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        };
+
+        // Function to calculate SIP future value and update UI
+        const calculateSIP = () => {
+            const P = parseFloat(monthlyInvestmentInput.value); // Monthly Investment
+            const annualReturnRate = parseFloat(returnRateInput.value); // Expected Annual Return Rate in %
+            const years = parseFloat(timePeriodInput.value); // Time Period in Years
+
+            // Convert annual return rate to monthly decimal rate
+            const r = annualReturnRate / 12 / 100; // Expected monthly return / 100
+            // Convert years to total months
+            const n = years * 12; // Total months
+
+            let futureValue = 0;
+            let investedAmount = P * n;
+
+            if (r === 0) { // Handle zero return rate case to avoid division by zero
+                futureValue = investedAmount;
+            } else {
+                // SIP Future Value formula: FV = P × [{(1 + r)^n – 1} × (1 + r)] / r
+                futureValue = P * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+            }
+
+            const estimatedReturns = futureValue - investedAmount;
+
+            // Update result spans
+            investedAmountSpan.textContent = formatCurrency(investedAmount);
+            estimatedReturnsSpan.textContent = formatCurrency(estimatedReturns);
+            totalValueSpan.textContent = formatCurrency(futureValue);
+
+            // Update Donut Chart
+            if (sipDonutChart) {
+                sipDonutChart.data.datasets[0].data = [investedAmount, estimatedReturns];
+                sipDonutChart.update();
+            } else {
+                const ctx = document.getElementById('sipChart').getContext('2d');
+                sipDonutChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Invested Amount', 'Estimated Returns'],
+                        datasets: [{
+                            data: [investedAmount, estimatedReturns],
+                            backgroundColor: [
+                                '#1c222d', // Darker color for invested amount
+                                '#42f8f5'  // Neon green for estimated returns
+                            ],
+                            borderColor: [
+                                '#12151a',
+                                '#12151a'
+                            ],
+                            borderWidth: 2,
+                            hoverOffset: 8,
+                            hoverBorderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%', // Make it a donut chart
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#e0e0e0', // Legend text color
+                                    font: {
+                                        family: 'Orbitron', // Apply Orbitron font to legend
+                                        size: 14
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += formatCurrency(context.raw);
+                                        return label;
+                                    }
+                                },
+                                titleFont: {
+                                    family: 'Orbitron' // Apply Orbitron font to tooltip title
+                                },
+                                bodyFont: {
+                                    family: 'Orbitron' // Apply Orbitron font to tooltip body
+                                },
+                                backgroundColor: '#1c222d',
+                                titleColor: '#42f8f5',
+                                bodyColor: '#e0e0e0',
+                                borderColor: '#42f8f5',
+                                borderWidth: 1
+                            }
+                        }
+                    }
+                });
+            }
+        };
+
+        // Synchronize slider and input fields, then recalculate
+        monthlyInvestmentSlider.addEventListener('input', () => {
+            monthlyInvestmentInput.value = monthlyInvestmentSlider.value;
+            calculateSIP();
+        });
+        monthlyInvestmentInput.addEventListener('input', () => {
+            monthlyInvestmentSlider.value = monthlyInvestmentInput.value;
+            calculateSIP();
+        });
+
+        returnRateSlider.addEventListener('input', () => {
+            returnRateInput.value = returnRateSlider.value;
+            calculateSIP();
+        });
+        returnRateInput.addEventListener('input', () => {
+            returnRateSlider.value = returnRateInput.value;
+            calculateSIP();
+        });
+
+        timePeriodSlider.addEventListener('input', () => {
+            timePeriodInput.value = timePeriodSlider.value;
+            calculateSIP();
+        });
+        timePeriodInput.addEventListener('input', () => {
+            timePeriodSlider.value = timePeriodInput.value;
+            calculateSIP();
+        });
+
+        // Initial calculation on page load
+        document.addEventListener('DOMContentLoaded', calculateSIP);
+    </script>
+</body>
+</html>
