@@ -1,195 +1,685 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="faveicon .png" type="image/x-icon">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Image Rotator/Flipper Tool</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #ffffff;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      text-align: center;
-      padding: 20px;
-    }
-
-    h1 {
-      color: #007bff;
-    }
-
-    .upload-section {
-      margin: 20px 0;
-    }
-
-    .controls {
-      margin: 20px 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      margin: 5px;
-      cursor: pointer;
-      border-radius: 5px;
-      flex: 1 1 40%;
-      max-width: 180px;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .preview {
-      margin: 20px 0;
-      max-height: 300px;
-      overflow: auto;
-      border: 1px solid #ddd;
-      padding: 10px;
-    }
-
-    #image-preview {
-      max-width: 100%;
-      max-height: 280px;
-      transition: transform 0.3s ease;
-    }
-
-    .download {
-      margin-top: 20px;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 10px;
-      }
-
-      button {
-        width: 100%;
-        max-width: none;
-        margin-top: 10px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Image Rotator/Flipper Tool</h1>
-    <div class="upload-section">
-      <input type="file" id="image-upload" accept="image/*">
-    </div>
-    <div class="controls">
-      <button id="rotate-left">Rotate Left</button>
-      <button id="rotate-right">Rotate Right</button>
-      <button id="flip-horizontal">Flip Horizontal</button>
-      <button id="flip-vertical">Flip Vertical</button>
-    </div>
-    <div class="preview">
-      <img id="image-preview" src="" alt="Image Preview" />
-    </div>
-    <div class="download">
-      <a id="download-link" href="#" download="edited_image.jpg">
-        <button>Download Image</button>
-      </a>
-    </div>
-  </div>
-
-  <script>
-    let imagePreview = document.getElementById('image-preview');
-    let imageUpload = document.getElementById('image-upload');
-    let rotateLeftBtn = document.getElementById('rotate-left');
-    let rotateRightBtn = document.getElementById('rotate-right');
-    let flipHorizontalBtn = document.getElementById('flip-horizontal');
-    let flipVerticalBtn = document.getElementById('flip-vertical');
-    let downloadLink = document.getElementById('download-link');
-
-    let rotation = 0;
-    let flipHorizontal = false;
-    let flipVertical = false;
-
-    imageUpload.addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        let reader = new FileReader();
-        reader.onload = function(e) {
-          imagePreview.src = e.target.result;
-          rotation = 0;
-          flipHorizontal = false;
-          flipVertical = false;
-          imagePreview.style.transform = '';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    rotateLeftBtn.addEventListener('click', () => {
-      rotation -= 90;
-      updateImage();
-    });
-
-    rotateRightBtn.addEventListener('click', () => {
-      rotation += 90;
-      updateImage();
-    });
-
-    flipHorizontalBtn.addEventListener('click', () => {
-      flipHorizontal = !flipHorizontal;
-      updateImage();
-    });
-
-    flipVerticalBtn.addEventListener('click', () => {
-      flipVertical = !flipVertical;
-      updateImage();
-    });
-
-    function updateImage() {
-      imagePreview.style.transform = `rotate(${rotation}deg)` +
-        (flipHorizontal ? ' scaleX(-1)' : '') +
-        (flipVertical ? ' scaleY(-1)' : '');
-      updateDownloadLink();
-    }
-
-    function updateDownloadLink() {
-      if (!imagePreview.src) return;
-
-      let canvas = document.createElement('canvas');
-      let ctx = canvas.getContext('2d');
-      let img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = imagePreview.src;
-
-      img.onload = function() {
-        let w = img.width;
-        let h = img.height;
-
-        if (rotation % 180 !== 0) {
-          canvas.width = h;
-          canvas.height = w;
-        } else {
-          canvas.width = w;
-          canvas.height = h;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Rotator & Flipper | Tools Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0d0f14;
+            --bg-navbar: #1c222d;
+            --bg-sidebar: #12151a;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --accent-cyan: #42f8f5;
+            --glow-shadow: rgba(66, 248, 245, 0.6);
+            --button-bg: #12151a;
+            --button-hover: #42f8f5;
+            --button-border: #42f8f5;
+            --transition-speed: 0.3s;
         }
 
-        ctx.translate(canvas.width / 2, canvas.height / 2);
-        ctx.rotate(rotation * Math.PI / 180);
-        ctx.scale(flipHorizontal ? -1 : 1, flipVertical ? -1 : 1);
-        ctx.drawImage(img, -w / 2, -h / 2);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        downloadLink.href = canvas.toDataURL("image/jpeg");
-      };
-    }
-  </script>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+
+        .navbar {
+            background-color: var(--bg-navbar);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-brand i {
+            color: var(--accent-cyan);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .tool-card {
+            background-color: var(--bg-sidebar);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all var(--transition-speed) ease;
+            margin-bottom: 2rem;
+        }
+
+        .tool-card:hover {
+            box-shadow: 0 0 15px var(--glow-shadow);
+        }
+
+        .tool-title {
+            color: var(--accent-cyan);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .tool-description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .tool-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 400px;
+            height: 200px;
+            border: 2px dashed var(--button-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .upload-label:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--glow-shadow);
+        }
+
+        .upload-label i {
+            font-size: 3rem;
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .upload-label span {
+            color: var(--text-secondary);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .controls-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .control-btn {
+            background-color: var(--button-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--button-border);
+            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            background-color: var(--button-hover);
+            color: var(--bg-sidebar);
+            box-shadow: 0 0 10px var(--glow-shadow);
+        }
+
+        .preview-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            border: 1px solid var(--button-border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(18, 21, 26, 0.7);
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .placeholder-text {
+            color: var(--text-secondary);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .download-btn {
+            background-color: var(--accent-cyan);
+            color: var(--bg-sidebar);
+            border: none;
+            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover {
+            box-shadow: 0 0 15px var(--glow-shadow);
+            transform: translateY(-2px);
+        }
+
+        .download-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .main-footer {
+            background-color: var(--bg-navbar);
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-socials a {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: color var(--transition-speed) ease;
+        }
+
+        .footer-socials a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color var(--transition-speed) ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .tool-card {
+                padding: 1.5rem;
+            }
+
+            .controls-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .control-btn {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+
+            .action-btns {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .download-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(66, 248, 245, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-cyan);
+            animation: spin 1s ease-in-out infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error message */
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 0.5rem;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">
+            <i class="fas fa-tools"></i>
+            <span>Tools Website</span>
+        </a>
+    </nav>
+
+    <main class="main-content">
+        <div class="tool-card">
+            <h1 class="tool-title">Image Rotator & Flipper</h1>
+            <p class="tool-description">
+                Upload an image and rotate or flip it as needed. Preview your changes and download the final version.
+            </p>
+
+            <div class="tool-container">
+                <div class="upload-section">
+                    <label for="file-input" class="upload-label" id="upload-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Click to upload an image or drag and drop</span>
+                        <span id="file-name" style="margin-top: 0.5rem; color: var(--accent-cyan); display: none;"></span>
+                    </label>
+                    <input type="file" id="file-input" accept="image/*">
+                    <div class="spinner" id="spinner"></div>
+                    <div class="error-message" id="error-message"></div>
+                </div>
+
+                <div class="controls-section">
+                    <button class="control-btn" id="rotate-left-btn" disabled>
+                        <i class="fas fa-undo"></i>
+                        Rotate Left
+                    </button>
+                    <button class="control-btn" id="rotate-right-btn" disabled>
+                        <i class="fas fa-redo"></i>
+                        Rotate Right
+                    </button>
+                    <button class="control-btn" id="flip-horizontal-btn" disabled>
+                        <i class="fas fa-arrows-alt-h"></i>
+                        Flip Horizontal
+                    </button>
+                    <button class="control-btn" id="flip-vertical-btn" disabled>
+                        <i class="fas fa-arrows-alt-v"></i>
+                        Flip Vertical
+                    </button>
+                    <button class="control-btn" id="reset-btn" disabled>
+                        <i class="fas fa-sync-alt"></i>
+                        Reset
+                    </button>
+                </div>
+
+                <div class="preview-section">
+                    <div class="image-container" id="image-container">
+                        <p class="placeholder-text">Your transformed image will appear here</p>
+                        <img id="preview-image" style="display: none;">
+                    </div>
+
+                    <div class="action-btns">
+                        <button class="download-btn" id="download-btn" disabled>
+                            <i class="fas fa-download"></i>
+                            Download Image
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-socials">
+                <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            </div>
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Disclaimer</a>
+            </div>
+            <p class="footer-copyright">
+                &copy; 2025 Tools Website. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const fileInput = document.getElementById('file-input');
+            const uploadLabel = document.getElementById('upload-label');
+            const fileName = document.getElementById('file-name');
+            const previewImage = document.getElementById('preview-image');
+            const imageContainer = document.getElementById('image-container');
+            const placeholderText = document.querySelector('.placeholder-text');
+            const spinner = document.getElementById('spinner');
+            const downloadBtn = document.getElementById('download-btn');
+            const errorMessage = document.getElementById('error-message');
+            
+            // Control buttons
+            const rotateLeftBtn = document.getElementById('rotate-left-btn');
+            const rotateRightBtn = document.getElementById('rotate-right-btn');
+            const flipHorizontalBtn = document.getElementById('flip-horizontal-btn');
+            const flipVerticalBtn = document.getElementById('flip-vertical-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            
+            // State variables
+            let currentRotation = 0;
+            let isFlippedHorizontal = false;
+            let isFlippedVertical = false;
+            let originalImage = null;
+            
+            // Event Listeners
+            fileInput.addEventListener('change', handleFileUpload);
+            
+            // Drag and drop events
+            uploadLabel.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadLabel.style.borderColor = 'var(--accent-cyan)';
+                uploadLabel.style.boxShadow = '0 0 15px var(--glow-shadow)';
+            });
+            
+            uploadLabel.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadLabel.style.borderColor = 'var(--button-border)';
+                uploadLabel.style.boxShadow = 'none';
+            });
+            
+            uploadLabel.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadLabel.style.borderColor = 'var(--button-border)';
+                uploadLabel.style.boxShadow = 'none';
+                
+                if (e.dataTransfer.files.length) {
+                    const file = e.dataTransfer.files[0];
+                    if (file.type.startsWith('image/')) {
+                        fileInput.files = e.dataTransfer.files;
+                        handleFileUpload({ target: fileInput });
+                    } else {
+                        showError('Please upload a valid image file.');
+                    }
+                }
+            });
+            
+            // Control buttons
+            rotateLeftBtn.addEventListener('click', () => rotateImage(-90));
+            rotateRightBtn.addEventListener('click', () => rotateImage(90));
+            flipHorizontalBtn.addEventListener('click', () => flipImage('horizontal'));
+            flipVerticalBtn.addEventListener('click', () => flipImage('vertical'));
+            resetBtn.addEventListener('click', resetImage);
+            downloadBtn.addEventListener('click', downloadImage);
+            
+            // Functions
+            function handleFileUpload(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                if (!file.type.startsWith('image/')) {
+                    showError('Please upload a valid image file.');
+                    return;
+                }
+                
+                clearError();
+                showSpinner();
+                
+                fileName.textContent = file.name;
+                fileName.style.display = 'block';
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    originalImage = new Image();
+                    originalImage.onload = function() {
+                        previewImage.src = e.target.result;
+                        previewImage.style.display = 'block';
+                        placeholderText.style.display = 'none';
+                        hideSpinner();
+                        enableControls();
+                        updateImageTransform();
+                    };
+                    originalImage.src = e.target.result;
+                };
+                reader.onerror = function() {
+                    hideSpinner();
+                    showError('Error reading the image file.');
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            function rotateImage(degrees) {
+                currentRotation += degrees;
+                // Keep rotation within 0-360 degrees
+                currentRotation = (currentRotation % 360 + 360) % 360;
+                updateImageTransform();
+            }
+            
+            function flipImage(direction) {
+                if (direction === 'horizontal') {
+                    isFlippedHorizontal = !isFlippedHorizontal;
+                } else if (direction === 'vertical') {
+                    isFlippedVertical = !isFlippedVertical;
+                }
+                updateImageTransform();
+            }
+            
+            function updateImageTransform() {
+                let transform = `rotate(${currentRotation}deg)`;
+                
+                if (isFlippedHorizontal) {
+                    transform += ' scaleX(-1)';
+                }
+                if (isFlippedVertical) {
+                    transform += ' scaleY(-1)';
+                }
+                
+                previewImage.style.transform = transform;
+            }
+            
+            function resetImage() {
+                currentRotation = 0;
+                isFlippedHorizontal = false;
+                isFlippedVertical = false;
+                updateImageTransform();
+            }
+            
+            function downloadImage() {
+                if (!originalImage) return;
+                
+                showSpinner();
+                
+                try {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Calculate new canvas dimensions to fit the rotated image
+                    const radians = currentRotation * Math.PI / 180;
+                    const sin = Math.abs(Math.sin(radians));
+                    const cos = Math.abs(Math.cos(radians));
+                    
+                    let width = originalImage.width;
+                    let height = originalImage.height;
+                    
+                    if (currentRotation % 180 !== 0) {
+                        width = originalImage.height;
+                        height = originalImage.width;
+                    }
+                    
+                    // Account for flipping
+                    if (isFlippedHorizontal) width *= -1;
+                    if (isFlippedVertical) height *= -1;
+                    
+                    canvas.width = Math.abs(width);
+                    canvas.height = Math.abs(height);
+                    
+                    // Center the image
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    ctx.rotate(currentRotation * Math.PI / 180);
+                    ctx.scale(
+                        isFlippedHorizontal ? -1 : 1,
+                        isFlippedVertical ? -1 : 1
+                    );
+                    
+                    ctx.drawImage(
+                        originalImage,
+                        -originalImage.width / 2,
+                        -originalImage.height / 2
+                    );
+                    
+                    // Convert to data URL and download
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = 'transformed-image.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        setTimeout(() => URL.revokeObjectURL(url), 100);
+                        hideSpinner();
+                    }, 'image/png');
+                } catch (error) {
+                    hideSpinner();
+                    showError('Error generating the image. Please try again.');
+                    console.error(error);
+                }
+            }
+            
+            function enableControls() {
+                rotateLeftBtn.disabled = false;
+                rotateRightBtn.disabled = false;
+                flipHorizontalBtn.disabled = false;
+                flipVerticalBtn.disabled = false;
+                resetBtn.disabled = false;
+                downloadBtn.disabled = false;
+            }
+            
+            function showSpinner() {
+                spinner.style.display = 'block';
+                uploadLabel.style.opacity = '0.5';
+            }
+            
+            function hideSpinner() {
+                spinner.style.display = 'none';
+                uploadLabel.style.opacity = '1';
+            }
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+            
+            function clearError() {
+                errorMessage.style.display = 'none';
+                errorMessage.textContent = '';
+            }
+        });
+    </script>
 </body>
 </html>
-  
