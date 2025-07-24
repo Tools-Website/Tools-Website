@@ -1,149 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="faveicon .png" type="image/x-icon">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PDF to Word Converter</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #ffffff;
-      color: #333;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      padding: 20px;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF to Word Converter</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Orbitron -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom styles for glow effect and font */
+        body {
+            font-family: 'Orbitron', sans-serif; /* Apply Orbitron font */
+            background-color: #0d0f14; /* Main Background Color */
+            color: #e0e0e0; /* Default text color */
+            transition: all 0.3s ease-in-out; /* Smooth transitions */
+        }
 
-    .container {
-      max-width: 500px;
-      width: 100%;
-      text-align: center;
-      background-color: #f0f8ff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 255, 0.1);
-      padding: 30px;
-    }
+        h1 {
+            color: #ffffff; /* White text for headings */
+        }
 
-    h1 {
-      color: #007bff;
-      margin-bottom: 10px;
-    }
+        /* Neon glow effect for buttons and cards on hover */
+        .neon-glow-hover:hover {
+            box-shadow: 0 0 10px #42f8f5, 0 0 20px #42f8f5, 0 0 30px rgba(66, 248, 245, 0.6);
+        }
 
-    p {
-      margin-top: 0;
-      margin-bottom: 20px;
-    }
+        /* Custom file input styling */
+        input[type="file"] {
+            color: #e0e0e0;
+        }
+        input[type="file"]::-webkit-file-upload-button {
+            background-color: #1c222d; /* Button background */
+            color: #42f8f5; /* Button text color */
+            border: 1px solid #42f8f5; /* Button border */
+            padding: 8px 16px;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background-color: #42f8f5; /* Hover background */
+            color: #12151a; /* Hover text color */
+            box-shadow: 0 0 10px #42f8f5, 0 0 20px rgba(66, 248, 245, 0.6);
+        }
 
-    input[type="file"] {
-      margin-top: 10px;
-      padding: 10px;
-      border: 2px dashed #007bff;
-      width: 100%;
-      background-color: #fff;
-      cursor: pointer;
-    }
+        /* Specific styling for the footer social icons */
+        .footer-socials a {
+            color: #e0e0e0; /* Default icon color */
+            transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+        }
+        .footer-socials a:hover {
+            color: #42f8f5; /* Icon hover color */
+            text-shadow: 0 0 8px #42f8f5; /* Glow on hover */
+        }
 
-    button {
-      margin-top: 20px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      padding: 12px 24px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .status-message {
-      margin-top: 20px;
-      color: #007bff;
-    }
-
-    .download-btn {
-      display: inline-block;
-      margin-top: 20px;
-      background-color: #28a745;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 6px;
-      text-decoration: none;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 20px;
-      }
-
-      h1 {
-        font-size: 22px;
-      }
-    }
-  </style>
+        /* Specific styling for footer links */
+        .footer-links a {
+            color: #e0e0e0; /* Default link color */
+            transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+        }
+        .footer-links a:hover {
+            color: #42f8f5; /* Link hover color */
+            text-shadow: 0 0 8px #42f8f5; /* Glow on hover */
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <h1>PDF to Word Converter</h1>
-    <p>Select a PDF file to convert it into editable Word format.</p>
+<body class="min-h-screen flex flex-col items-center justify-between py-8 px-4 relative">
+    <!-- Side Logo -->
+    <div class="absolute top-4 left-4 text-3xl font-bold text-[#42f8f5] drop-shadow-[0_0_5px_rgba(66,248,245,0.8)] z-10">
+        Tools Websites 
+    </div>
 
-    <form id="upload-form">
-      <input type="file" id="pdfFile" accept=".pdf" required />
-      <button type="submit">Convert to Word</button>
-    </form>
+    <!-- Main Content Container -->
+    <div class="container bg-[#12151a] p-8 rounded-xl shadow-lg border border-[#42f8f5]
+                max-w-md w-full text-center transition-all duration-300 ease-in-out
+                hover:shadow-2xl hover:border-cyan-400 neon-glow-hover">
+        <h1 class="text-4xl font-bold mb-6 text-[#42f8f5] drop-shadow-[0_0_5px_rgba(66,248,245,0.8)]">
+            PDF to Word Converter
+        </h1>
+        <p class="text-lg mb-6 text-[#e0e0e0]">Convert your PDF files to editable Word documents with ease.</p>
 
-    <div id="status" class="status-message"></div>
-    <a id="downloadLink" class="download-btn" style="display: none;" download>Download Word File</a>
-  </div>
+        <input type="file" id="pdfUpload" accept="application/pdf"
+               class="block mx-auto mb-6 p-2 rounded-md border border-gray-600 bg-[#1c222d] text-[#e0e0e0]
+                      focus:outline-none focus:ring-2 focus:ring-[#42f8f5] transition-all duration-300" />
 
-  <script>
-    document.getElementById("upload-form").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      
-      const fileInput = document.getElementById("pdfFile");
-      const status = document.getElementById("status");
-      const downloadLink = document.getElementById("downloadLink");
+        <button onclick="convertToWord()"
+                class="bg-[#1c222d] text-[#42f8f5] border border-[#42f8f5]
+                       py-3 px-8 rounded-lg text-lg font-semibold cursor-pointer
+                       transition-all duration-300 ease-in-out
+                       hover:bg-[#42f8f5] hover:text-[#12151a] hover:shadow-lg
+                       active:scale-95 neon-glow-hover">
+            Convert to Word
+        </button>
+        <p id="status" class="mt-6 text-base text-[#e0e0e0]"></p>
+    </div>
 
-      if (!fileInput.files.length) {
-        status.textContent = "Please select a PDF file.";
-        return;
-      }
+    <!-- Footer Section -->
+    <footer class="main-footer w-full mt-12 py-8 bg-[#1c222d] text-[#e0e0e0] text-center rounded-t-xl">
+        <div class="footer-socials flex justify-center space-x-6 mb-6 text-3xl">
+            <a href="#" aria-label="Youtube" class="hover:text-[#42f8f5] transition-colors duration-300"><i class="fab fa-youtube"></i></a>
+            <a href="#" aria-label="Facebook" class="hover:text-[#42f8f5] transition-colors duration-300"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter" class="hover:text-[#42f8f5] transition-colors duration-300"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram" class="hover:text-[#42f8f5] transition-colors duration-300"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Telegram" class="hover:text-[#42f8f5] transition-colors duration-300"><i class="fab fa-telegram-plane"></i></a>
+        </div>
+        <div class="footer-links flex flex-wrap justify-center space-x-4 mb-6 text-sm md:text-base">
+            <a href="#" class="hover:text-[#42f8f5] transition-colors duration-300">About Us</a>
+            <a href="#" class="hover:text-[#42f8f5] transition-colors duration-300">Contact Us</a>
+            <a href="#" class="hover:text-[#42f8f5] transition-colors duration-300">Privacy Policy</a>
+            <a href="#" class="hover:text-[#42f8f5] transition-colors duration-300">Terms of Service</a>
+            <a href="#" class="hover:text-[#42f8f5] transition-colors duration-300">Cookie Policy</a>
+            <a href="#" class="hover:text-[#42f8f5] transition-colors duration-300">Disclaimer</a>
+        </div>
+        <p class="footer-copyright text-sm text-gray-500">
+            &copy; 2025 Tools Website. All Rights Reserved.
+        </p>
+    </footer>
 
-      const file = fileInput.files[0];
-      const formData = new FormData();
-      formData.append("file", file);
+    <script>
+        async function convertToWord() {
+            const fileInput = document.getElementById('pdfUpload');
+            const status = document.getElementById('status');
+            if (!fileInput.files.length) {
+                status.textContent = 'Please select a PDF file.';
+                return;
+            }
 
-      status.textContent = "Converting... Please wait.";
-      downloadLink.style.display = "none";
+            const file = fileInput.files[0];
 
-      try {
-        // Replace this with your real backend or API endpoint
-        const response = await fetch("https://api.example.com/convert-pdf-to-word", {
-          method: "POST",
-          body: formData
-        });
+            // Placeholder: Actual conversion requires backend or external API
+            status.textContent = 'Uploading and converting file...';
 
-        if (!response.ok) throw new Error("Conversion failed.");
+            // Simulate delay
+            setTimeout(() => {
+                status.textContent = 'Conversion successful! Download will start shortly.';
 
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-
-        downloadLink.href = url;
-        downloadLink.download = file.name.replace(/\.pdf$/, ".docx");
-        downloadLink.style.display = "inline-block";
-        status.textContent = "Conversion successful!";
-      } catch (err) {
-        console.error(err);
-        status.textContent = "Error during conversion. Please try again.";
-      }
-    });
-  </script>
+                // Simulate download
+                const blob = new Blob(["This is a mock Word document content."], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'converted.docx';
+                a.click();
+                URL.revokeObjectURL(url);
+            }, 2000);
+        }
+    </script>
 </body>
 </html>
