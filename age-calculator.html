@@ -1,113 +1,369 @@
-  
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="faveicon .png" type="image/x-icon">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Age Calculator</title>
-  <style>
-    body {
-      background: #f4f9ff;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator | Tools Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0d0f14;
+            --bg-nav: #1c222d;
+            --bg-sidebar: #12151a;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --accent: #42f8f5;
+            --glow: rgba(66, 248, 245, 0.6);
+            --card-bg: #12151a;
+            --transition: all 0.3s ease;
+        }
 
-    .container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.1);
-      text-align: center;
-      width: 90%;
-      max-width: 400px;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    h1 {
-      color: #007bff;
-      margin-bottom: 20px;
-    }
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    input[type="date"] {
-      padding: 10px;
-      width: 100%;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
+        .navbar {
+            background-color: var(--bg-nav);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
 
-    button {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: #fff;
-      font-size: 1rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    button:hover {
-      background-color: #0056b3;
-    }
+        .logo i {
+            color: var(--accent);
+            font-size: 1.8rem;
+        }
 
-    #result {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #333;
-    }
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(to right, var(--accent), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px var(--glow);
+        }
 
-    @media (max-width: 600px) {
-      .container {
-        padding: 20px;
-      }
-    }
-  </style>
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tool-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .tool-card:hover {
+            box-shadow: 0 0 20px var(--glow);
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .tool-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px var(--glow);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--bg-nav);
+            border: 1px solid #2d3748;
+            border-radius: 5px;
+            color: var(--text-primary);
+            font-family: 'Orbitron', sans-serif;
+            transition: var(--transition);
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        .result-container {
+            background-color: var(--bg-nav);
+            border-radius: 5px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            text-align: center;
+            border: 1px solid #2d3748;
+            transition: var(--transition);
+        }
+
+        .result-container:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--glow);
+        }
+
+        .result-title {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .age-result {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .age-details {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .age-box {
+            background-color: var(--bg-main);
+            padding: 0.8rem;
+            border-radius: 5px;
+            min-width: 100px;
+            border: 1px solid #2d3748;
+            transition: var(--transition);
+        }
+
+        .age-box:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        .age-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .age-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .main-footer {
+            background-color: var(--bg-nav);
+            padding: 2rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-socials {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-socials a {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .footer-socials a:hover {
+            color: var(--accent);
+            transform: translateY(-3px);
+            text-shadow: 0 0 10px var(--glow);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+            text-shadow: 0 0 5px var(--glow);
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .tool-card {
+                padding: 1.5rem;
+            }
+            
+            .age-details {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-tools"></i>
+            <span class="logo-text">Tools Website</span>
+        </div>
+    </nav>
 
-  <div class="container">
-    <h1>Age Calculator</h1>
-    <input type="date" id="dob" />
-    <button onclick="calculateAge()">Calculate Age</button>
-    <div id="result"></div>
-  </div>
+    <main class="main-content">
+        <div class="tool-card">
+            <h1 class="tool-title">AGE CALCULATOR</h1>
+            <div class="input-group">
+                <label for="birthdate">Enter Your Birthdate</label>
+                <input type="date" id="birthdate" name="birthdate" max="">
+            </div>
+            
+            <div class="result-container" id="resultContainer" style="display: none;">
+                <h2 class="result-title">Your Age</h2>
+                <p class="age-result" id="ageResult"></p>
+                
+                <div class="age-details">
+                    <div class="age-box">
+                        <div class="age-value" id="years">0</div>
+                        <div class="age-label">Years</div>
+                    </div>
+                    <div class="age-box">
+                        <div class="age-value" id="months">0</div>
+                        <div class="age-label">Months</div>
+                    </div>
+                    <div class="age-box">
+                        <div class="age-value" id="days">0</div>
+                        <div class="age-label">Days</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-  <script>
-    function calculateAge() {
-      const dob = document.getElementById("dob").value;
-      if (!dob) {
-        document.getElementById("result").innerText = "Please select your date of birth.";
-        return;
-      }
+    <footer class="main-footer">
+        <div class="footer-socials">
+            <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+        </div>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Cookie Policy</a>
+            <a href="#">Disclaimer</a>
+        </div>
+        <p class="footer-copyright">
+            &copy; 2025 Tools Website. All Rights Reserved.
+        </p>
+    </footer>
 
-      const birthDate = new Date(dob);
-      const today = new Date();
-
-      let ageYears = today.getFullYear() - birthDate.getFullYear();
-      let ageMonths = today.getMonth() - birthDate.getMonth();
-      let ageDays = today.getDate() - birthDate.getDate();
-
-      if (ageDays < 0) {
-        ageMonths--;
-        ageDays += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-      }
-
-      if (ageMonths < 0) {
-        ageYears--;
-        ageMonths += 12;
-      }
-
-      document.getElementById("result").innerText = `You are ${ageYears} years, ${ageMonths} months, and ${ageDays} days old.`;
-    }
-  </script>
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set max date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('birthdate').setAttribute('max', today);
+            
+            // Calculate age when date changes
+            document.getElementById('birthdate').addEventListener('change', calculateAge);
+            
+            function calculateAge() {
+                const birthdate = new Date(document.getElementById('birthdate').value);
+                const today = new Date();
+                
+                if (isNaN(birthdate.getTime())) {
+                    return; // Invalid date
+                }
+                
+                let years = today.getFullYear() - birthdate.getFullYear();
+                let months = today.getMonth() - birthdate.getMonth();
+                let days = today.getDate() - birthdate.getDate();
+                
+                // Adjust for negative month/day differences
+                if (months < 0 || (months === 0 && days < 0)) {
+                    years--;
+                    months += 12;
+                }
+                
+                if (days < 0) {
+                    const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                    days += lastMonth.getDate();
+                    months--;
+                }
+                
+                // Update the UI
+                document.getElementById('years').textContent = years;
+                document.getElementById('months').textContent = months;
+                document.getElementById('days').textContent = days;
+                
+                document.getElementById('ageResult').textContent = `${years} years, ${months} months, ${days} days`;
+                
+                // Show result container
+                document.getElementById('resultContainer').style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
-
-  
