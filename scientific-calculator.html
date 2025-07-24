@@ -1,163 +1,437 @@
-  
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="faveicon .png" type="image/x-icon">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Scientific Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Calculator | Tools Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root {
+            --main-bg: #0d0f14;
+            --navbar-bg: #1c222d;
+            --sidebar-bg: #12151a;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --accent: #42f8f5;
+            --glow: rgba(66, 248, 245, 0.6);
+            --button-bg: #12151a;
+            --button-hover: #42f8f5;
+            --button-border: #42f8f5;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f9;
+            background-color: var(--main-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-logo {
             display: flex;
             justify-content: center;
+            padding: 1.5rem 0;
+            background-color: var(--navbar-bg);
+            border-bottom: 1px solid var(--accent);
+            box-shadow: 0 0 15px var(--glow);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: 2px;
+            display: flex;
             align-items: center;
-            height: 100vh;
-            margin: 0;
         }
 
-        .calculator {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 300px;
+        .logo span {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--glow);
         }
 
-        #display {
+        .calculator-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
             width: 100%;
-            height: 50px;
-            font-size: 1.5rem;
+        }
+
+        .calculator-card {
+            background-color: var(--sidebar-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(66, 248, 245, 0.1);
+        }
+
+        .calculator-card:hover {
+            box-shadow: 0 0 15px var(--glow);
+        }
+
+        .calculator-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .calculator-display {
+            background-color: var(--navbar-bg);
+            color: var(--text-primary);
+            font-size: 2rem;
+            padding: 1rem;
             text-align: right;
             border-radius: 5px;
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f1f1f1;
+            margin-bottom: 1.5rem;
+            min-height: 80px;
+            word-wrap: break-word;
+            border: 1px solid var(--button-border);
+            box-shadow: inset 0 0 10px rgba(66, 248, 245, 0.2);
         }
 
-        .button {
-            width: 60px;
-            height: 60px;
-            margin: 5px;
-            font-size: 1.5rem;
+        .calculator-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-buttons {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calculator-buttons {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .calc-btn {
+            background-color: var(--button-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--button-border);
             border-radius: 5px;
-            border: 1px solid #ccc;
+            padding: 1rem;
+            font-size: 1.2rem;
             cursor: pointer;
-            background-color: #f1f1f1;
-            transition: background-color 0.3s;
+            transition: var(--transition);
+            box-shadow: 0 0 5px rgba(66, 248, 245, 0);
         }
 
-        .button:hover {
-            background-color: #007bff;
-            color: white;
+        .calc-btn:hover {
+            background-color: var(--button-hover);
+            color: var(--main-bg);
+            box-shadow: 0 0 10px var(--glow);
+            transform: translateY(-2px);
         }
 
-        .button:active {
-            background-color: #0056b3;
+        .calc-btn:active {
+            transform: translateY(0);
         }
 
-        .button.double {
-            width: 130px;
+        .calc-btn.operator {
+            color: var(--accent);
         }
 
-        .button.clear {
-            background-color: #ff4d4d;
-            color: white;
+        .calc-btn.function {
+            color: #f8a542;
         }
 
-        .button.equals {
-            background-color: #28a745;
-            color: white;
+        .calc-btn.equals {
+            background-color: var(--accent);
+            color: var(--main-bg);
+            font-weight: bold;
         }
 
-        .button.function {
-            background-color: #17a2b8;
-            color: white;
+        .calc-btn.clear {
+            color: #f54242;
+        }
+
+        .history-container {
+            margin-top: 2rem;
+            background-color: var(--sidebar-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(66, 248, 245, 0.1);
+        }
+
+        .history-title {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .history-list {
+            list-style-type: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(66, 248, 245, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .main-footer {
+            background-color: var(--navbar-bg);
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            text-align: center;
+        }
+
+        .footer-socials {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+            gap: 1.5rem;
+        }
+
+        .footer-socials a {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .footer-socials a:hover {
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
+    <header class="header-logo">
+        <a href="#" class="logo">
+            <span>Tools</span> Website 
+        </a>
+    </header>
 
-    <div class="calculator">
-        <input type="text" id="display" disabled />
-        <div>
-            <button class="button" onclick="appendToDisplay('7')">7</button>
-            <button class="button" onclick="appendToDisplay('8')">8</button>
-            <button class="button" onclick="appendToDisplay('9')">9</button>
-            <button class="button function" onclick="appendToDisplay('/')">/</button>
+    <div class="calculator-container">
+        <div class="calculator-card">
+            <h1 class="calculator-title">SCIENTIFIC CALCULATOR</h1>
+            <div class="calculator-display" id="display">
+                <div id="current-input">0</div>
+                <div id="previous-input" style="font-size: 1rem; color: var(--text-secondary);"></div>
+            </div>
+            <div class="calculator-buttons">
+                <!-- Scientific Functions -->
+                <button class="calc-btn function" onclick="calculateFunction('Math.sqrt(')">√</button>
+                <button class="calc-btn function" onclick="calculateFunction('Math.pow(,2)')">x²</button>
+                <button class="calc-btn function" onclick="calculateFunction('Math.pow(,3)')">x³</button>
+                <button class="calc-btn function" onclick="calculateFunction('Math.pow(10,')">10^x</button>
+                <button class="calc-btn function" onclick="calculateFunction('Math.log(')">ln</button>
+                
+                <button class="calc-btn function" onclick="calculateFunction('Math.log10(')">log</button>
+                <button class="calc-btn function" onclick="calculateFunction('Math.sin(')">sin</button>
+                <button class="calc-btn function" onclick="calculateFunction('Math.cos(')">cos</button>
+                <button class="calc-btn function" onclick="calculateFunction('Math.tan(')">tan</button>
+                <button class="calc-btn function" onclick="calculateFunction('Math.PI')">π</button>
+                
+                <!-- Basic Operations -->
+                <button class="calc-btn clear" onclick="clearDisplay()">C</button>
+                <button class="calc-btn clear" onclick="backspace()">⌫</button>
+                <button class="calc-btn operator" onclick="appendToDisplay('(')">(</button>
+                <button class="calc-btn operator" onclick="appendToDisplay(')')">)</button>
+                <button class="calc-btn operator" onclick="appendToDisplay('/')">/</button>
+                
+                <button class="calc-btn" onclick="appendToDisplay('7')">7</button>
+                <button class="calc-btn" onclick="appendToDisplay('8')">8</button>
+                <button class="calc-btn" onclick="appendToDisplay('9')">9</button>
+                <button class="calc-btn operator" onclick="appendToDisplay('*')">×</button>
+                <button class="calc-btn operator" onclick="appendToDisplay('%')">%</button>
+                
+                <button class="calc-btn" onclick="appendToDisplay('4')">4</button>
+                <button class="calc-btn" onclick="appendToDisplay('5')">5</button>
+                <button class="calc-btn" onclick="appendToDisplay('6')">6</button>
+                <button class="calc-btn operator" onclick="appendToDisplay('-')">-</button>
+                <button class="calc-btn function" onclick="calculateFunction('Math.exp(')">e^x</button>
+                
+                <button class="calc-btn" onclick="appendToDisplay('1')">1</button>
+                <button class="calc-btn" onclick="appendToDisplay('2')">2</button>
+                <button class="calc-btn" onclick="appendToDisplay('3')">3</button>
+                <button class="calc-btn operator" onclick="appendToDisplay('+')">+</button>
+                <button class="calc-btn function" onclick="appendToDisplay('Math.E')">e</button>
+                
+                <button class="calc-btn" onclick="appendToDisplay('0')">0</button>
+                <button class="calc-btn" onclick="appendToDisplay('.')">.</button>
+                <button class="calc-btn equals" onclick="calculateResult()">=</button>
+            </div>
         </div>
-        <div>
-            <button class="button" onclick="appendToDisplay('4')">4</button>
-            <button class="button" onclick="appendToDisplay('5')">5</button>
-            <button class="button" onclick="appendToDisplay('6')">6</button>
-            <button class="button function" onclick="appendToDisplay('*')">*</button>
-        </div>
-        <div>
-            <button class="button" onclick="appendToDisplay('1')">1</button>
-            <button class="button" onclick="appendToDisplay('2')">2</button>
-            <button class="button" onclick="appendToDisplay('3')">3</button>
-            <button class="button function" onclick="appendToDisplay('-')">-</button>
-        </div>
-        <div>
-            <button class="button" onclick="appendToDisplay('0')">0</button>
-            <button class="button" onclick="appendToDisplay('.')">.</button>
-            <button class="button double" onclick="clearDisplay()">C</button>
-            <button class="button function" onclick="appendToDisplay('+')">+</button>
-        </div>
-        <div>
-            <button class="button function" onclick="appendToDisplay('sqrt(')">√</button>
-            <button class="button function" onclick="appendToDisplay('pow(')">x²</button>
-            <button class="button function" onclick="appendToDisplay('sin(')">sin</button>
-            <button class="button function" onclick="appendToDisplay('cos(')">cos</button>
-        </div>
-        <div>
-            <button class="button function" onclick="appendToDisplay('tan(')">tan</button>
-            <button class="button function" onclick="appendToDisplay('log(')">log</button>
-            <button class="button function" onclick="appendToDisplay('exp(')">exp</button>
-            <button class="button equals" onclick="calculate()">=</button>
+        
+        <div class="history-container">
+            <h3 class="history-title">CALCULATION HISTORY</h3>
+            <ul class="history-list" id="history-list">
+                <!-- History items will be added here dynamically -->
+            </ul>
         </div>
     </div>
+    
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-socials">
+                <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            </div>
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Disclaimer</a>
+            </div>
+            <p class="footer-copyright">
+                &copy; 2025 Tools Website. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
 
     <script>
-        const display = document.getElementById('display');
-
-        // Append values to the display
+        let currentInput = '0';
+        let previousInput = '';
+        let calculationHistory = [];
+        
+        const currentInputElement = document.getElementById('current-input');
+        const previousInputElement = document.getElementById('previous-input');
+        const historyListElement = document.getElementById('history-list');
+        
+        function updateDisplay() {
+            currentInputElement.textContent = currentInput;
+            previousInputElement.textContent = previousInput;
+        }
+        
         function appendToDisplay(value) {
-            display.value += value;
+            if (currentInput === '0' && value !== '.') {
+                currentInput = value;
+            } else {
+                currentInput += value;
+            }
+            updateDisplay();
         }
-
-        // Clear the display
-        function clearDisplay() {
-            display.value = '';
-        }
-
-        // Evaluate the expression and show the result
-        function calculate() {
-            try {
-                // Replace square root and powers for easier eval() interpretation
-                let expression = display.value;
-                expression = expression.replace(/sqrt/g, 'Math.sqrt');
-                expression = expression.replace(/pow/g, 'Math.pow');
-                expression = expression.replace(/log/g, 'Math.log');
-                expression = expression.replace(/exp/g, 'Math.exp');
-                expression = expression.replace(/sin/g, 'Math.sin');
-                expression = expression.replace(/cos/g, 'Math.cos');
-                expression = expression.replace(/tan/g, 'Math.tan');
-
-                // Calculate the result
-                const result = eval(expression);
-                display.value = result;
-            } catch (e) {
-                display.value = 'Error';
+        
+        function calculateFunction(func) {
+            if (func === 'Math.PI' || func === 'Math.E') {
+                currentInput = func;
+                calculateResult();
+            } else if (func === 'Math.pow(,2)' || func === 'Math.pow(,3)') {
+                try {
+                    const value = eval(currentInput);
+                    const result = eval(func.replace(',', value + ','));
+                    previousInput = `${func.replace(',', currentInput + ',').replace('Math.pow', 'pow')} = ${result}`;
+                    currentInput = result.toString();
+                    addToHistory(previousInput);
+                    updateDisplay();
+                } catch (error) {
+                    currentInput = 'Error';
+                    updateDisplay();
+                }
+            } else {
+                currentInput = func + currentInput + ')';
+                updateDisplay();
             }
         }
+        
+        function clearDisplay() {
+            currentInput = '0';
+            previousInput = '';
+            updateDisplay();
+        }
+        
+        function backspace() {
+            if (currentInput.length === 1) {
+                currentInput = '0';
+            } else {
+                currentInput = currentInput.slice(0, -1);
+            }
+            updateDisplay();
+        }
+        
+        function calculateResult() {
+            try {
+                const result = eval(currentInput);
+                previousInput = currentInput + ' =';
+                currentInput = result.toString();
+                addToHistory(`${previousInput} ${currentInput}`);
+                updateDisplay();
+            } catch (error) {
+                currentInput = 'Error';
+                updateDisplay();
+            }
+        }
+        
+        function addToHistory(calculation) {
+            calculationHistory.unshift(calculation);
+            if (calculationHistory.length > 10) {
+                calculationHistory.pop();
+            }
+            updateHistoryDisplay();
+        }
+        
+        function updateHistoryDisplay() {
+            historyListElement.innerHTML = '';
+            calculationHistory.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'history-item';
+                li.textContent = item;
+                historyListElement.appendChild(li);
+            });
+        }
+        
+        // Initialize display
+        updateDisplay();
     </script>
-
 </body>
 </html>
-
-  
-  
