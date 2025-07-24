@@ -1,124 +1,622 @@
-  
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="faveicon .png" type="image/x-icon">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Converter Tool</title>
-  <style>
-    body {
-      background-color: #ffffff;
-      color: #2563eb;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      min-height: 100vh;
-      padding: 1rem;
-      box-sizing: border-box;
-    }
-    .container {
-      padding: 2rem;
-      border-radius: 16px;
-      max-width: 500px;
-      width: 100%;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      background-color: #ffffff;
-    }
-    input, select, button {
-      width: 100%;
-      margin-top: 1rem;
-      padding: 0.5rem;
-      border: 2px solid #2563eb;
-      border-radius: 8px;
-      font-size: 1rem;
-      color: #2563eb;
-      background-color: #ffffff;
-    }
-    button {
-      background-color: #2563eb;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #1e40af;
-    }
-    img {
-      max-width: 100%;
-      margin-top: 1rem;
-      border-radius: 8px;
-    }
-    .download-btn {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      background-color: #2563eb;
-      color: white;
-      text-align: center;
-      border-radius: 8px;
-      text-decoration: none;
-    }
-    .download-btn:hover {
-      background-color: #1e40af;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Converter | Multi-Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0d0f14;
+            --bg-nav: #1c222d;
+            --bg-sidebar: #12151a;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --accent: #42f8f5;
+            --glow: rgba(66, 248, 245, 0.6);
+            --btn-bg: #12151a;
+            --btn-hover: #42f8f5;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: var(--bg-nav);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, var(--accent), #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px var(--glow);
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            padding: 2rem;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background-color: var(--bg-sidebar);
+            border-radius: 8px;
+            padding: 1.5rem;
+            width: 250px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+
+        .sidebar:hover {
+            box-shadow: 0 0 15px var(--glow);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--bg-sidebar);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 0 15px var(--glow);
+        }
+
+        h2 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--accent);
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-area:hover {
+            background-color: rgba(66, 248, 245, 0.1);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .upload-area p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            background-color: var(--btn-bg);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+        }
+
+        .btn:hover {
+            background-color: var(--btn-hover);
+            color: var(--bg-sidebar);
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: var(--bg-sidebar);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--btn-hover);
+            box-shadow: 0 0 15px var(--glow);
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        select, input[type="range"] {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--bg-nav);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        select:focus, input[type="range"]:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .preview-box {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1rem;
+        }
+
+        .file-info {
+            background-color: var(--bg-nav);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .file-info p {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .range-value {
+            min-width: 40px;
+            text-align: center;
+            color: var(--accent);
+        }
+
+        /* Footer Styles */
+        .main-footer {
+            background-color: var(--bg-nav);
+            padding: 2rem 0;
+            border-top: 1px solid rgba(66, 248, 245, 0.2);
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-socials a {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+        }
+
+        .footer-socials a:hover {
+            color: var(--accent);
+            transform: translateY(-3px);
+            text-shadow: 0 0 10px var(--glow);
+            border-color: var(--accent);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+            text-shadow: 0 0 5px var(--glow);
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .options {
+                flex-direction: column;
+            }
+
+            .preview-container {
+                flex-direction: column;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Image Converter Tool</h1>
-    <input type="file" id="imageInput" accept="image/*" />
-    <select id="formatSelect">
-      <option value="png">PNG</option>
-      <option value="jpeg">JPG</option>
-      <option value="gif">GIF</option>
-      <option value="webp">WebP</option>
-    </select>
-    <button onclick="convertImage()">Convert Image</button>
+    <nav class="navbar">
+        <h1>Tools Website</h1>
+    </nav>
 
-    <div id="previewContainer"></div>
-  </div>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Instructions</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">
+                <i class="fas fa-info-circle" style="color: var(--accent); margin-right: 0.5rem;"></i>
+                Upload an image to convert it to different formats.
+            </p>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">
+                <i class="fas fa-cog" style="color: var(--accent); margin-right: 0.5rem;"></i>
+                Adjust quality and format options as needed.
+            </p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                <i class="fas fa-download" style="color: var(--accent); margin-right: 0.5rem;"></i>
+                Preview and download your converted image.
+            </p>
+        </aside>
 
-  <script>
-    let originalFile;
+        <main class="main-content">
+            <div class="card">
+                <h2>Upload Image</h2>
+                <div id="uploadArea" class="upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag & Drop your image here or click to browse</p>
+                    <button class="btn btn-primary">Select Image</button>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                </div>
+            </div>
 
-    document.getElementById('imageInput').addEventListener('change', function(e) {
-      originalFile = e.target.files[0];
-      const previewContainer = document.getElementById('previewContainer');
-      previewContainer.innerHTML = '<p>Original Preview:</p>' + '<img src="' + URL.createObjectURL(originalFile) + '" alt="Original Image">';
-    });
+            <div class="card" id="conversionOptions" style="display: none;">
+                <h2>Conversion Options</h2>
+                <div class="options">
+                    <div class="option-group">
+                        <label for="formatSelect">Output Format</label>
+                        <select id="formatSelect">
+                            <option value="jpeg">JPEG</option>
+                            <option value="png">PNG</option>
+                            <option value="webp">WebP</option>
+                            <option value="gif">GIF</option>
+                            <option value="bmp">BMP</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="qualityRange">Quality</label>
+                        <div class="range-container">
+                            <input type="range" id="qualityRange" min="1" max="100" value="80">
+                            <span class="range-value" id="qualityValue">80%</span>
+                        </div>
+                    </div>
+                </div>
 
-    function convertImage() {
-      if (!originalFile) return alert("Please upload an image first.");
+                <div class="preview-container">
+                    <div class="preview-box">
+                        <h3>Original</h3>
+                        <img id="originalPreview" class="preview-img" src="" alt="Original Preview">
+                        <div class="file-info" id="originalInfo"></div>
+                    </div>
+                    <div class="preview-box">
+                        <h3>Converted</h3>
+                        <img id="convertedPreview" class="preview-img" src="" alt="Converted Preview">
+                        <div class="file-info" id="convertedInfo"></div>
+                    </div>
+                </div>
 
-      const format = document.getElementById("formatSelect").value;
-      const reader = new FileReader();
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      const img = new Image();
+                <div class="actions">
+                    <button id="convertBtn" class="btn btn-primary">Convert Image</button>
+                    <button id="downloadBtn" class="btn" disabled>Download</button>
+                </div>
+            </div>
+        </main>
+    </div>
 
-      reader.onload = function(event) {
-        img.onload = function() {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
+    <!-- Footer Section -->
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-socials">
+                <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            </div>
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Disclaimer</a>
+            </div>
+            <p class="footer-copyright">
+                &copy; 2025 Tools Website. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
 
-          canvas.toBlob(function(blob) {
-            const convertedUrl = URL.createObjectURL(blob);
-            const previewContainer = document.getElementById("previewContainer");
-            previewContainer.innerHTML += '<p>Converted Preview:</p>' +
-              '<img src="' + convertedUrl + '" alt="Converted Image">' +
-              '<a class="download-btn" href="' + convertedUrl + '" download="converted-image.' + format + '">Download Converted Image</a>';
-          }, 'image/' + format);
-        };
-        img.src = event.target.result;
-      };
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadArea = document.getElementById('uploadArea');
+            const convertBtn = document.getElementById('convertBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const formatSelect = document.getElementById('formatSelect');
+            const qualityRange = document.getElementById('qualityRange');
+            const qualityValue = document.getElementById('qualityValue');
+            const originalPreview = document.getElementById('originalPreview');
+            const convertedPreview = document.getElementById('convertedPreview');
+            const originalInfo = document.getElementById('originalInfo');
+            const convertedInfo = document.getElementById('convertedInfo');
+            const conversionOptions = document.getElementById('conversionOptions');
 
-      reader.readAsDataURL(originalFile);
-    }
-  </script>
+            let originalFile = null;
+            let convertedBlob = null;
+
+            // Upload area click handler
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            // Drag and drop handlers
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.backgroundColor = 'rgba(66, 248, 245, 0.1)';
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.backgroundColor = '';
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.backgroundColor = '';
+                if (e.dataTransfer.files.length) {
+                    handleFileSelect(e.dataTransfer.files[0]);
+                }
+            });
+
+            // File input change handler
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    handleFileSelect(e.target.files[0]);
+                }
+            });
+
+            // Quality range handler
+            qualityRange.addEventListener('input', () => {
+                qualityValue.textContent = `${qualityRange.value}%`;
+            });
+
+            // Convert button handler
+            convertBtn.addEventListener('click', convertImage);
+
+            // Download button handler
+            downloadBtn.addEventListener('click', downloadImage);
+
+            function handleFileSelect(file) {
+                if (!file.type.match('image.*')) {
+                    alert('Please select an image file.');
+                    return;
+                }
+
+                originalFile = file;
+                conversionOptions.style.display = 'block';
+
+                // Display original image preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    originalPreview.src = e.target.result;
+                    
+                    // Display original file info
+                    originalInfo.innerHTML = `
+                        <p><strong>Name:</strong> ${file.name}</p>
+                        <p><strong>Type:</strong> ${file.type}</p>
+                        <p><strong>Size:</strong> ${formatFileSize(file.size)}</p>
+                        <p><strong>Dimensions:</strong> Loading...</p>
+                    `;
+                    
+                    // Get image dimensions
+                    const img = new Image();
+                    img.onload = function() {
+                        originalInfo.querySelector('p:last-child').innerHTML = 
+                            `<strong>Dimensions:</strong> ${this.width} × ${this.height} px`;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+
+                // Reset converted preview
+                convertedPreview.src = '';
+                convertedInfo.innerHTML = '';
+                downloadBtn.disabled = true;
+            }
+
+            function convertImage() {
+                if (!originalFile) return;
+
+                const quality = parseInt(qualityRange.value) / 100;
+                const format = formatSelect.value;
+                
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    
+                    let mimeType;
+                    switch (format) {
+                        case 'jpeg': mimeType = 'image/jpeg'; break;
+                        case 'png': mimeType = 'image/png'; break;
+                        case 'webp': mimeType = 'image/webp'; break;
+                        case 'gif': mimeType = 'image/gif'; break;
+                        case 'bmp': mimeType = 'image/bmp'; break;
+                        default: mimeType = 'image/jpeg';
+                    }
+                    
+                    canvas.toBlob((blob) => {
+                        convertedBlob = blob;
+                        const convertedUrl = URL.createObjectURL(blob);
+                        convertedPreview.src = convertedUrl;
+                        
+                        // Display converted file info
+                        convertedInfo.innerHTML = `
+                            <p><strong>Format:</strong> ${format.toUpperCase()}</p>
+                            <p><strong>Size:</strong> ${formatFileSize(blob.size)}</p>
+                            <p><strong>Quality:</strong> ${qualityRange.value}%</p>
+                            <p><strong>Dimensions:</strong> ${img.width} × ${img.height} px</p>
+                        `;
+                        
+                        downloadBtn.disabled = false;
+                    }, mimeType, quality);
+                };
+                
+                img.src = URL.createObjectURL(originalFile);
+            }
+
+            function downloadImage() {
+                if (!convertedBlob) return;
+                
+                const a = document.createElement('a');
+                const url = URL.createObjectURL(convertedBlob);
+                const extension = formatSelect.value;
+                const originalName = originalFile.name.split('.')[0];
+                
+                a.href = url;
+                a.download = `${originalName}_converted.${extension}`;
+                document.body.appendChild(a);
+                a.click();
+                
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        });
+    </script>
 </body>
 </html>
-  
-  
