@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Tool | Tools Web</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0d0f14;
+            --bg-nav: #1c222d;
+            --bg-sidebar: #12151a;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --accent: #42f8f5;
+            --glow: rgba(66, 248, 245, 0.6);
+            --card-bg: #12151a;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        header {
+            background-color: var(--bg-nav);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--glow);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            text-shadow: 0 0 15px var(--glow);
+        }
+
+        .tool-title {
+            text-align: center;
+            margin: 30px 0;
+            color: var(--accent);
+            text-shadow: 0 0 8px var(--glow);
+        }
+
+        .ocr-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        @media (min-width: 992px) {
+            .ocr-container {
+                flex-direction: row;
+            }
+        }
+
+        .upload-section, .result-section {
+            flex: 1;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            border: 1px solid rgba(66, 248, 245, 0.1);
+        }
+
+        .upload-section:hover, .result-section:hover {
+            box-shadow: 0 0 15px var(--glow);
+            border: 1px solid var(--accent);
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+            color: var(--accent);
+            font-size: 1.3rem;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--accent);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            background-color: rgba(66, 248, 245, 0.05);
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .upload-area p {
+            color: var(--text-secondary);
+        }
+
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 20px auto;
+            display: none;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn {
+            background-color: var(--card-bg);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: var(--bg-main);
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: var(--text-secondary);
+            color: var(--text-secondary);
+        }
+
+        .btn:disabled:hover {
+            background-color: var(--card-bg);
+            box-shadow: none;
+        }
+
+        #extractedText {
+            width: 100%;
+            min-height: 200px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            padding: 15px;
+            color: var(--text-primary);
+            font-family: 'Roboto', sans-serif;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        #progressBar {
+            height: 10px;
+            background-color: var(--accent);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 5px var(--glow);
+        }
+
+        .status {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading i {
+            color: var(--accent);
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            background-color: var(--bg-nav);
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .footer-socials {
+            margin-bottom: 20px;
+        }
+
+        .footer-socials a {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin: 0 10px;
+            transition: var(--transition);
+        }
+
+        .footer-socials a:hover {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--glow);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            margin: 0 15px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .tool-title {
+                font-size: 1.5rem;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .footer-links a {
+                margin: 5px 0;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo">Tools Website </a>
+            <nav>
+                <!-- Navigation items would go here -->
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="tool-title">IMAGE TO TEXT (OCR) TOOL</h1>
+
+        <div class="ocr-container">
+            <div class="upload-section">
+                <h2 class="section-title">Upload Image</h2>
+                <div class="upload-area" id="dropArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag & drop your image here or click to browse</p>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                </div>
+                <img id="imagePreview" alt="Preview">
+                <div class="progress-container" id="progressContainer">
+                    <div id="progressBar"></div>
+                    <p class="status" id="statusText">Initializing OCR engine...</p>
+                </div>
+                <button class="btn" id="extractBtn" disabled>Extract Text</button>
+                <button class="btn" id="clearBtn" disabled>Clear</button>
+            </div>
+
+            <div class="result-section">
+                <h2 class="section-title">Extracted Text</h2>
+                <textarea id="extractedText" readonly placeholder="Extracted text will appear here..."></textarea>
+                <button class="btn" id="copyBtn" disabled>Copy Text</button>
+                <button class="btn" id="downloadBtn" disabled>Download as TXT</button>
+                <div class="loading" id="loadingIndicator">
+                    <i class="fas fa-spinner"></i>
+                    <p>Processing image...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-socials">
+                <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            </div>
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Disclaimer</a>
+            </div>
+            <p class="footer-copyright">
+                &copy; 2025 Tools Website. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const dropArea = document.getElementById('dropArea');
+            const imagePreview = document.getElementById('imagePreview');
+            const extractBtn = document.getElementById('extractBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const extractedText = document.getElementById('extractedText');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const statusText = document.getElementById('statusText');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+
+            let currentFile = null;
+
+            // Handle drag and drop events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                dropArea.style.backgroundColor = 'rgba(66, 248, 245, 0.1)';
+                dropArea.style.boxShadow = '0 0 15px var(--glow)';
+            }
+
+            function unhighlight() {
+                dropArea.style.backgroundColor = '';
+                dropArea.style.boxShadow = '';
+            }
+
+            // Handle file drop
+            dropArea.addEventListener('drop', handleDrop, false);
+            dropArea.addEventListener('click', () => fileInput.click());
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const file = dt.files[0];
+                handleFile(file);
+            }
+
+            // Handle file selection
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    handleFile(this.files[0]);
+                }
+            });
+
+            function handleFile(file) {
+                if (!file.type.match('image.*')) {
+                    alert('Please select an image file.');
+                    return;
+                }
+
+                currentFile = file;
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    extractBtn.disabled = false;
+                    clearBtn.disabled = false;
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+            // Extract text from image
+            extractBtn.addEventListener('click', function() {
+                if (!currentFile) return;
+
+                loadingIndicator.style.display = 'block';
+                progressContainer.style.display = 'block';
+                extractBtn.disabled = true;
+
+                Tesseract.recognize(
+                    currentFile,
+                    'eng',
+                    {
+                        logger: m => {
+                            if (m.status === 'recognizing text') {
+                                progressBar.style.width = `${Math.round(m.progress * 100)}%`;
+                            }
+                            statusText.textContent = m.status;
+                        }
+                    }
+                ).then(({ data: { text } }) => {
+                    extractedText.value = text;
+                    copyBtn.disabled = false;
+                    downloadBtn.disabled = false;
+                }).catch(err => {
+                    console.error(err);
+                    statusText.textContent = 'Error occurred during OCR processing';
+                }).finally(() => {
+                    loadingIndicator.style.display = 'none';
+                    extractBtn.disabled = false;
+                });
+            });
+
+            // Clear everything
+            clearBtn.addEventListener('click', function() {
+                fileInput.value = '';
+                imagePreview.src = '';
+                imagePreview.style.display = 'none';
+                extractedText.value = '';
+                currentFile = null;
+                extractBtn.disabled = true;
+                clearBtn.disabled = true;
+                copyBtn.disabled = true;
+                downloadBtn.disabled = true;
+                progressContainer.style.display = 'none';
+                progressBar.style.width = '0%';
+            });
+
+            // Copy text to clipboard
+            copyBtn.addEventListener('click', function() {
+                extractedText.select();
+                document.execCommand('copy');
+                
+                // Visual feedback
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                copyBtn.style.backgroundColor = 'var(--accent)';
+                copyBtn.style.color = 'var(--bg-main)';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.backgroundColor = '';
+                    copyBtn.style.color = '';
+                }, 2000);
+            });
+
+            // Download text as file
+            downloadBtn.addEventListener('click', function() {
+                if (!extractedText.value) return;
+                
+                const blob = new Blob([extractedText.value], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                
+                a.href = url;
+                a.download = currentFile ? currentFile.name.replace(/\.[^/.]+$/, '') + '.txt' : 'extracted_text.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        });
+    </script>
+</body>
+</html>
