@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer | Tools Web</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0d0f14;
+            --bg-nav: #1c222d;
+            --bg-sidebar: #12151a;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --accent: #42f8f5;
+            --glow: rgba(66, 248, 245, 0.6);
+            --card-bg: #12151a;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--bg-nav);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .tool-container {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            border: 1px solid rgba(66, 248, 245, 0.1);
+        }
+
+        .tool-container:hover {
+            box-shadow: 0 0 15px var(--glow);
+            border-color: rgba(66, 248, 245, 0.3);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            text-align: center;
+        }
+
+        .tool-description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .resizer-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .upload-section, .controls-section, .preview-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--accent);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: rgba(66, 248, 245, 0.05);
+        }
+
+        .upload-area:hover {
+            background-color: rgba(66, 248, 245, 0.1);
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .upload-area p {
+            color: var(--text-secondary);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .dimension-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .dimension-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        input[type="number"], input[type="range"] {
+            background-color: var(--bg-nav);
+            border: 1px solid var(--accent);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            transition: var(--transition);
+        }
+
+        input[type="number"]:focus, input[type="range"]:focus {
+            outline: none;
+            box-shadow: 0 0 5px var(--glow);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 5px;
+            background: var(--bg-nav);
+            border-radius: 5px;
+            padding: 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 0 5px var(--glow);
+        }
+
+        .ratio-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .ratio-control input[type="checkbox"] {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .ratio-control input[type="checkbox"]:checked {
+            background-color: var(--accent);
+        }
+
+        .ratio-control input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            color: var(--bg-nav);
+            font-size: 12px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #preview-image {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        .original-size, .new-size {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        button {
+            background-color: var(--bg-sidebar);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background-color: var(--accent);
+            color: var(--bg-sidebar);
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: var(--bg-sidebar);
+            color: var(--accent);
+        }
+
+        footer {
+            background-color: var(--bg-nav);
+            padding: 2rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-socials a {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .footer-socials a:hover {
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 1rem;
+            }
+
+            .tool-container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .dimension-controls {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo">Tools<span>Website</span></a>
+            <!-- Navigation items would go here -->
+        </div>
+    </header>
+
+    <main>
+        <div class="tool-container">
+            <h1>IMAGE RESIZER</h1>
+            <p class="tool-description">
+                Upload an image and resize it to your desired dimensions. 
+                Maintain aspect ratio or specify custom width and height.
+            </p>
+
+            <div class="resizer-container">
+                <div class="upload-section">
+                    <div class="upload-area" id="upload-area">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload an image or drag and drop</p>
+                        <input type="file" id="file-input" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="controls-section">
+                    <div class="dimension-controls">
+                        <div class="dimension-group">
+                            <label for="width">Width (px)</label>
+                            <input type="number" id="width" min="1" placeholder="Width">
+                            <input type="range" id="width-slider" min="1" max="2000" value="800">
+                        </div>
+                        <div class="dimension-group">
+                            <label for="height">Height (px)</label>
+                            <input type="number" id="height" min="1" placeholder="Height">
+                            <input type="range" id="height-slider" min="1" max="2000" value="600">
+                        </div>
+                    </div>
+
+                    <div class="ratio-control">
+                        <input type="checkbox" id="maintain-ratio" checked>
+                        <label for="maintain-ratio">Maintain aspect ratio</label>
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <div class="preview-container">
+                        <img id="preview-image" alt="Preview">
+                        <p class="original-size" id="original-size"></p>
+                        <p class="new-size" id="new-size"></p>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="resize-btn" disabled>Resize Image</button>
+                        <button id="download-btn" disabled>Download</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-socials">
+                <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            </div>
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Disclaimer</a>
+            </div>
+            <p class="footer-copyright">
+                &copy; 2025 Tools Website. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+            const widthSlider = document.getElementById('width-slider');
+            const heightSlider = document.getElementById('height-slider');
+            const ratioCheckbox = document.getElementById('maintain-ratio');
+            const resizeBtn = document.getElementById('resize-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const previewImage = document.getElementById('preview-image');
+            const originalSizeText = document.getElementById('original-size');
+            const newSizeText = document.getElementById('new-size');
+
+            // Variables
+            let originalImage = null;
+            let originalWidth = 0;
+            let originalHeight = 0;
+            let aspectRatio = 1;
+            let resizedImage = null;
+
+            // Event Listeners
+            uploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileUpload);
+            widthInput.addEventListener('input', handleWidthChange);
+            heightInput.addEventListener('input', handleHeightChange);
+            widthSlider.addEventListener('input', handleWidthSliderChange);
+            heightSlider.addEventListener('input', handleHeightSliderChange);
+            ratioCheckbox.addEventListener('change', toggleAspectRatio);
+            resizeBtn.addEventListener('click', resizeImage);
+            downloadBtn.addEventListener('click', downloadImage);
+
+            // Drag and drop functionality
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.backgroundColor = 'rgba(66, 248, 245, 0.1)';
+                uploadArea.style.boxShadow = '0 0 15px var(--glow)';
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.backgroundColor = 'rgba(66, 248, 245, 0.05)';
+                uploadArea.style.boxShadow = 'none';
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.backgroundColor = 'rgba(66, 248, 245, 0.05)';
+                uploadArea.style.boxShadow = 'none';
+                
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileUpload();
+                }
+            });
+
+            // Functions
+            function handleFileUpload() {
+                const file = fileInput.files[0];
+                if (!file || !file.type.match('image.*')) return;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    originalImage = new Image();
+                    originalImage.onload = function() {
+                        originalWidth = this.width;
+                        originalHeight = this.height;
+                        aspectRatio = originalWidth / originalHeight;
+
+                        // Set initial dimensions (maintaining aspect ratio)
+                        const displayWidth = Math.min(800, originalWidth);
+                        const displayHeight = displayWidth / aspectRatio;
+
+                        widthInput.value = Math.round(displayWidth);
+                        heightInput.value = Math.round(displayHeight);
+                        widthSlider.value = Math.round(displayWidth);
+                        heightSlider.value = Math.round(displayHeight);
+                        widthSlider.max = originalWidth * 2;
+                        heightSlider.max = originalHeight * 2;
+
+                        // Display original image and info
+                        previewImage.src = e.target.result;
+                        previewImage.style.display = 'block';
+                        originalSizeText.textContent = `Original: ${originalWidth} × ${originalHeight} px`;
+                        newSizeText.textContent = `New: ${widthInput.value} × ${heightInput.value} px`;
+
+                        // Enable buttons
+                        resizeBtn.disabled = false;
+                        downloadBtn.disabled = true;
+                    };
+                    originalImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function handleWidthChange() {
+                const newWidth = parseInt(widthInput.value) || 1;
+                widthSlider.value = newWidth;
+
+                if (ratioCheckbox.checked && originalImage) {
+                    const newHeight = Math.round(newWidth / aspectRatio);
+                    heightInput.value = newHeight;
+                    heightSlider.value = newHeight;
+                }
+
+                updateSizeText();
+            }
+
+            function handleHeightChange() {
+                const newHeight = parseInt(heightInput.value) || 1;
+                heightSlider.value = newHeight;
+
+                if (ratioCheckbox.checked && originalImage) {
+                    const newWidth = Math.round(newHeight * aspectRatio);
+                    widthInput.value = newWidth;
+                    widthSlider.value = newWidth;
+                }
+
+                updateSizeText();
+            }
+
+            function handleWidthSliderChange() {
+                widthInput.value = widthSlider.value;
+                handleWidthChange();
+            }
+
+            function handleHeightSliderChange() {
+                heightInput.value = heightSlider.value;
+                handleHeightChange();
+            }
+
+            function toggleAspectRatio() {
+                if (ratioCheckbox.checked && originalImage) {
+                    // When re-enabling aspect ratio, adjust height based on current width
+                    const newHeight = Math.round(widthInput.value / aspectRatio);
+                    heightInput.value = newHeight;
+                    heightSlider.value = newHeight;
+                    updateSizeText();
+                }
+            }
+
+            function updateSizeText() {
+                if (originalImage) {
+                    newSizeText.textContent = `New: ${widthInput.value} × ${heightInput.value} px`;
+                }
+            }
+
+            function resizeImage() {
+                if (!originalImage) return;
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const newWidth = parseInt(widthInput.value);
+                const newHeight = parseInt(heightInput.value);
+
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+
+                // Draw the resized image
+                ctx.drawImage(originalImage, 0, 0, newWidth, newHeight);
+
+                // Convert canvas to image and display
+                resizedImage = new Image();
+                resizedImage.onload = function() {
+                    previewImage.src = this.src;
+                    downloadBtn.disabled = false;
+                };
+                resizedImage.src = canvas.toDataURL('image/jpeg', 0.9);
+            }
+
+            function downloadImage() {
+                if (!resizedImage) return;
+
+                const link = document.createElement('a');
+                link.download = 'resized-image.jpg';
+                link.href = resizedImage.src;
+                link.click();
+            }
+        });
+    </script>
+</body>
+</html>
